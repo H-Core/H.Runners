@@ -1,0 +1,46 @@
+{
+  "Variables": [
+    {
+      "Key": "$PROJECT_NAME$",
+      "Value": "CSharpProjectTemplate"
+    },
+    {
+      "Key": "$PROJECT_DESCRIPTION$",
+      "Value": "CSharpProjectTemplate"
+    }
+  ],
+  "Conditions": [
+    {
+      "Key": "?NUGET?",
+      "Value": true
+    },
+    {
+      "Key": "?INTEGRATION_TESTS?",
+      "Value": false
+    },
+    {
+      "Key": "?UNIT_TESTS?",
+      "Value": true
+    },
+    {
+      "Key": "?ANALYZERS?",
+      "Value": false
+    },
+    {
+      "Key": "?CONSOLE_APP?",
+      "Value": false
+    },
+    {
+      "Key": "?WPF_APP?",
+      "Value": false
+    },
+    {
+      "Key": "?WINDOWS_FORMS_APP?",
+      "Value": false
+    },
+    {
+      "Key": "?WIX_INSTALLER?",
+      "Value": false
+    }
+  ]
+}
