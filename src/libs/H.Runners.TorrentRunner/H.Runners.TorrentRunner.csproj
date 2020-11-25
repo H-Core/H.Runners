@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net4.8</TargetFramework>
+    <RootNamespace>H.Runners</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Signing">
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <Version>0.9.0</Version>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <Description></Description>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Remove="Microsoft.CodeAnalysis.FxCopAnalyzers" />
+    <Reference Include="MonoTorrent, Version=0.80.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>libraries\MonoTorrent.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="MonoTorrent.Dht">
+      <HintPath>libraries\MonoTorrent.Dht.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="H.Core" Version="0.9.1" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.7.4" />
+  </ItemGroup>
+
+</Project>

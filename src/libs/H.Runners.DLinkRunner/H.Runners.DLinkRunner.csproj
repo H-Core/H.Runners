@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net4.5</TargetFrameworks>
+    <RootNamespace>H.Runners</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <Version>0.9.0</Version>
+    <Description></Description>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net4.5' ">
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="H.Core" Version="0.9.1" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net4.8</TargetFrameworks>
+    <RootNamespace>H.Runners</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <Version>0.9.0</Version>
+    <Description></Description>
+    <PackageReleaseNotes>Initial release.</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CS-Script" Version="3.30.3" />
+    <PackageReference Include="H.Core" Version="0.9.1" />
+  </ItemGroup>
+
+</Project>

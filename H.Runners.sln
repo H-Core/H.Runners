@@ -1,0 +1,67 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}"
+	ProjectSection(SolutionItems) = preProject
+		src\libs\Directory.Build.props = src\libs\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{9CAA231D-7BE1-46C9-ACD6-EB2E569CEBEA}"
+	ProjectSection(SolutionItems) = preProject
+		src\tests\Directory.Build.props = src\tests\Directory.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{94FE90BF-FA05-46C6-A207-6E454A236659}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		src\Directory.Build.props = src\Directory.Build.props
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.CSharpRunner", "src\libs\H.Runners.CSharpRunner\H.Runners.CSharpRunner.csproj", "{5C34693C-8F4C-4124-947E-3C37F41C30A8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.DLinkRunner", "src\libs\H.Runners.DLinkRunner\H.Runners.DLinkRunner.csproj", "{9D6339F0-66BA-437A-9BD5-699A14E7BC24}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.TelegramRunner", "src\libs\H.Runners.TelegramRunner\H.Runners.TelegramRunner.csproj", "{1716CF00-7007-406B-8DFE-B1EC7AAA588C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.TorrentRunner", "src\libs\H.Runners.TorrentRunner\H.Runners.TorrentRunner.csproj", "{C3DEC3B1-8D33-4037-982E-72C2CD713E80}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5C34693C-8F4C-4124-947E-3C37F41C30A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C34693C-8F4C-4124-947E-3C37F41C30A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C34693C-8F4C-4124-947E-3C37F41C30A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C34693C-8F4C-4124-947E-3C37F41C30A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D6339F0-66BA-437A-9BD5-699A14E7BC24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D6339F0-66BA-437A-9BD5-699A14E7BC24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D6339F0-66BA-437A-9BD5-699A14E7BC24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D6339F0-66BA-437A-9BD5-699A14E7BC24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1716CF00-7007-406B-8DFE-B1EC7AAA588C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1716CF00-7007-406B-8DFE-B1EC7AAA588C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1716CF00-7007-406B-8DFE-B1EC7AAA588C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1716CF00-7007-406B-8DFE-B1EC7AAA588C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3DEC3B1-8D33-4037-982E-72C2CD713E80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3DEC3B1-8D33-4037-982E-72C2CD713E80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3DEC3B1-8D33-4037-982E-72C2CD713E80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3DEC3B1-8D33-4037-982E-72C2CD713E80}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5C34693C-8F4C-4124-947E-3C37F41C30A8} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+		{9D6339F0-66BA-437A-9BD5-699A14E7BC24} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+		{1716CF00-7007-406B-8DFE-B1EC7AAA588C} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+		{C3DEC3B1-8D33-4037-982E-72C2CD713E80} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1493AEE4-9211-46E9-BFE6-8F629EAC5693}
+	EndGlobalSection
+EndGlobal

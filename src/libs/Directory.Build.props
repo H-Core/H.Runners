@@ -9,8 +9,8 @@
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     <Authors>havendv</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/HavenDV/$PROJECT_NAME$</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/HavenDV/$PROJECT_NAME$</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/HavenDV/H.Runners</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/HavenDV/H.Runners</RepositoryUrl>
     <PackageIcon>nuget_icon.png</PackageIcon>
   </PropertyGroup>
 
