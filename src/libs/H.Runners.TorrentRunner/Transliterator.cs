@@ -3,11 +3,24 @@ using System.Linq;
 
 namespace H.Runners
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class Transliterator
     {
+        /// <summary>
+        /// 
+        /// </summary>
         public enum TranslateType
         {
+            /// <summary>
+            /// 
+            /// </summary>
             Gost,
+            
+            /// <summary>
+            /// 
+            /// </summary>
             Iso
         }
 
@@ -37,6 +50,12 @@ namespace H.Runners
             ['«'] = "", ['»'] = "", ['—'] = "-"//, [' '] = "-"
         };
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static string Convert(string text, TranslateType type)
         {
             var dictionary = type == TranslateType.Gost ? GostDictionary : IsoDictionary;

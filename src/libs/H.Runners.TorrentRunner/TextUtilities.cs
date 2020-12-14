@@ -4,8 +4,17 @@ using System.Linq;
 
 namespace H.Runners
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public static class TextUtilities
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="string1"></param>
+        /// <param name="string2"></param>
+        /// <returns></returns>
         public static int LevenshteinDistance(string string1, string string2)
         {
             if (string1 == null) throw new ArgumentNullException(nameof(string1));
@@ -31,6 +40,12 @@ namespace H.Runners
             return m[string1.Length, string2.Length];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="string1"></param>
+        /// <param name="string2"></param>
+        /// <returns></returns>
         public static int MinimalLevenshteinDistance(string string1, string string2)
         {
             var bigString = string1.Length > string2.Length ? string1 : string2;

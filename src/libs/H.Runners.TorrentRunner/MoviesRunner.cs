@@ -8,6 +8,9 @@ using H.Core.Settings;
 
 namespace H.Runners
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class MoviesRunner : Runner
     {
         #region Properties
@@ -23,6 +26,9 @@ namespace H.Runners
 
         #region Constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
         public MoviesRunner()
         {
             AddSetting(nameof(Folder), o => Folder = o, NoEmpty, Folder, SettingType.Folder);

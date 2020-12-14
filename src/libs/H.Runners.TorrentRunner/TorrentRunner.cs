@@ -15,6 +15,9 @@ using MonoTorrent.Common;
 
 namespace H.Runners
 {
+    /// <summary>
+    ///
+    /// </summary>
     public class TorrentRunner : Runner
     {
         #region Properties
@@ -37,6 +40,9 @@ namespace H.Runners
 
         #region Constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
         public TorrentRunner()
         {
             AddSetting(nameof(SaveTo), o => SaveTo = o, NoEmpty, SaveTo, SettingType.Folder);
@@ -180,9 +186,9 @@ namespace H.Runners
             Say($"Ищу торрент {text}");
 
             var query = SearchPattern.Replace("*", text);
-            Log($"Search Query: {query}");
+            OnLogReceived($"Search Query: {query}");
             var urls = await SearchInInternet(query, MaxSearchResults);
-            Log($"Search Urls: {Environment.NewLine}{string.Join(Environment.NewLine, urls)}");
+            OnLogReceived($"Search Urls: {Environment.NewLine}{string.Join(Environment.NewLine, urls)}");
             if (!urls.Any())
             {
                 await SayAsync("Поиск в гугле не дал результатов");
@@ -190,10 +196,10 @@ namespace H.Runners
             }
 
             var torrents = await GetTorrents(urls);
-            Log($"Torrents({torrents.Length})");
+            OnLogReceived($"Torrents({torrents.Length})");
 
             var files = await DownloadFiles(torrents);
-            Log($"Files({torrents.Length})");
+            OnLogReceived($"Files({torrents.Length})");
 
             var path = FindBestTorrent(files);
             if (path == null)
@@ -225,7 +231,7 @@ namespace H.Runners
             catch (Exception e)
             {
                 Say(@"Ошибка загрузки");
-                Log(e.ToString());
+                OnLogReceived(e.ToString());
                 return;
             }
 
