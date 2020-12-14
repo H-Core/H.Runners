@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using H.Core.Runners;
 
@@ -44,14 +45,14 @@ namespace H.Runners
             AddSetting(nameof(Login), o => Login = o, Always, Login);
             AddSetting(nameof(Password), o => Password = o, Always, Password);
 
-            AddAsyncAction("reload-router", ReloadRouter);
+            Add(new AsyncCommand("reload-router", ReloadRouter));
         }
 
         #endregion
 
         #region Private methods
 
-        private async Task ReloadRouter(string? text)
+        private async Task ReloadRouter(CancellationToken cancellationToken = default)
         {
             var uri = new Uri(Url);
 
@@ -75,7 +76,7 @@ namespace H.Runners
                 RequestUri = new Uri("index.cgi?res_cmd=6&res_buf=null&res_cmd_type=nbl&v2=y&rq=y&proxy=y&_=1542876693187", UriKind.Relative),
                 Method = HttpMethod.Get
             };
-            using var response = await client.SendAsync(request).ConfigureAwait(false);
+            using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
                 Print($"Bad Response: {response}");

@@ -16,15 +16,21 @@ namespace H.Runners
         /// </summary>
         public CSharpRunner()
         {
-            AddAction("csharp", CSharpCommand, "code");
-            //AddAction("code-from-file", CodeFromFileCommand, "path");
+            Add(new Command("csharp", CSharpCommand)
+            {
+                Description = "code",
+            });
+            //Add(new Command("code-from-file", CodeFromFileCommand)
+            //{
+            //    Description = "path",
+            //});
         }
 
         #endregion
 
         #region Private methods
 
-        private void CSharpCommand(string? text)
+        private void CSharpCommand(string text)
         {
             var action = CSScript.Evaluator
                 .LoadDelegate<Action<Action<string>, Action<string>, Action<string>, Func<string, object?>>>($@"

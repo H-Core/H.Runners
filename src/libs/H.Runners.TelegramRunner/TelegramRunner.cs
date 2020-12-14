@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using H.Core.Runners;
 using Telegram.Bot;
@@ -47,8 +48,11 @@ namespace H.Runners
             AddSetting(nameof(UserId), o => UserId = o, UsedIdIsValid, 0);
             AddSetting(nameof(ProxyIp), o => ProxyIp = o, Always, string.Empty);
             AddSetting(nameof(ProxyPort), o => ProxyPort = o, Always, 0);
-                                                                  
-            AddAsyncAction("telegram", SendMessage, "text");
+                   
+            Add(new AsyncCommand("telegram", SendMessageAsync)
+            {
+                Description = "message",
+            });
         }
 
         /// <summary>
@@ -86,14 +90,15 @@ namespace H.Runners
 
         #region Private methods
 
-        private async Task SendMessage(string? text)
+        private async Task SendMessageAsync(string text, CancellationToken cancellationToken = default)
         {
             var isProxy = !string.IsNullOrWhiteSpace(ProxyIp) && Positive(ProxyPort);
             var client = isProxy
                 ? new TelegramBotClient(Token, new WebProxy(ProxyIp, ProxyPort))
                 : new TelegramBotClient(Token);
             
-            await client.SendTextMessageAsync(new ChatId(UserId), text).ConfigureAwait(false);
+            await client.SendTextMessageAsync(new ChatId(UserId), text, cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
         }
 
         #endregion

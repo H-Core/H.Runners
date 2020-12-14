@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
-using H.Core;
 using H.Core.Runners;
 using H.Core.Settings;
 using HtmlAgilityPack;
@@ -56,7 +56,10 @@ namespace H.Runners
             AddSetting(nameof(StartSizeMb), o => StartSizeMb = o, Always, StartSizeMb);
             AddSetting(nameof(MaxSearchResults), o => MaxSearchResults = o, Always, MaxSearchResults);
 
-            AddAsyncAction("torrent", TorrentCommand, "text");
+            Add(new AsyncCommand("torrent", TorrentAsync)
+            {
+                Description = "name",
+            });
 
             Settings.PropertyChanged += (_, _) =>
             {
@@ -181,7 +184,7 @@ namespace H.Runners
             return bestTorrent?.TorrentPath;
         }
 
-        private async Task TorrentCommand(string? text)
+        private async Task TorrentAsync(string text, CancellationToken cancellationToken = default)
         {
             Say($"Ищу торрент {text}");
 
