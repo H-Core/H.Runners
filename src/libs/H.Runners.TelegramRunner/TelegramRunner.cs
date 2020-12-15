@@ -49,10 +49,7 @@ namespace H.Runners
             AddSetting(nameof(ProxyIp), o => ProxyIp = o, Always, string.Empty);
             AddSetting(nameof(ProxyPort), o => ProxyPort = o, Always, 0);
                    
-            Add(new AsyncCommand("telegram", SendMessageAsync)
-            {
-                Description = "message",
-            });
+            Add(new AsyncAction("telegram", SendMessageAsync, "message"));
         }
 
         /// <summary>

@@ -45,7 +45,7 @@ namespace H.Runners
             AddSetting(nameof(Login), o => Login = o, Always, Login);
             AddSetting(nameof(Password), o => Password = o, Always, Password);
 
-            Add(new AsyncCommand("reload-router", ReloadRouter));
+            Add(new AsyncAction("reload-router", ReloadRouter));
         }
 
         #endregion

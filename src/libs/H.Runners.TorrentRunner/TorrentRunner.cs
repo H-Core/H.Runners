@@ -56,10 +56,7 @@ namespace H.Runners
             AddSetting(nameof(StartSizeMb), o => StartSizeMb = o, Always, StartSizeMb);
             AddSetting(nameof(MaxSearchResults), o => MaxSearchResults = o, Always, MaxSearchResults);
 
-            Add(new AsyncCommand("torrent", TorrentAsync)
-            {
-                Description = "name",
-            });
+            Add(new AsyncAction("torrent", TorrentAsync, "name"));
 
             Settings.PropertyChanged += (_, _) =>
             {

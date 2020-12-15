@@ -39,10 +39,7 @@ namespace H.Runners
             AddSetting(nameof(MaximumDistance), o => MaximumDistance = o, Positive, MaximumDistance);
             AddSetting(nameof(AutoTorrent), o => AutoTorrent = o, Always, AutoTorrent);
 
-            Add(new AsyncCommand("find-movie", FindMovieCommandAsync)
-            {
-                Description = "name",
-            });
+            Add(new AsyncAction("find-movie", FindMovieCommandAsync, "name"));
         }
 
         #endregion

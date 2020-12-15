@@ -3,8 +3,10 @@
   <Import Project="..\Directory.Build.props" />
 
   <PropertyGroup Label="Nuget">
-    <Version>0.13.8</Version>
-    <PackageReleaseNotes>To H.Core 0.13.8.</PackageReleaseNotes>
+    <Version>0.14.2</Version>
+    <PackageReleaseNotes>
+      To H.Core 0.14.2.
+    </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Authors>havendv</Authors>

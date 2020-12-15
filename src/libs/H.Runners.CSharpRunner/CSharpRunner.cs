@@ -16,21 +16,15 @@ namespace H.Runners
         /// </summary>
         public CSharpRunner()
         {
-            Add(new Command("csharp", CSharpCommand)
-            {
-                Description = "code",
-            });
-            //Add(new Command("code-from-file", CodeFromFileCommand)
-            //{
-            //    Description = "path",
-            //});
+            Add(new SyncAction("csharp", RunCode, "code"));
+            //Add(new SyncAction("code-from-file", RunCodeFromFile, "path"));
         }
 
         #endregion
 
         #region Private methods
 
-        private void CSharpCommand(string text)
+        private void RunCode(string code)
         {
             var action = CSScript.Evaluator
                 .LoadDelegate<Action<Action<string>, Action<string>, Action<string>, Func<string, object?>>>($@"
@@ -46,7 +40,7 @@ using System.Threading.Tasks;
 
 void Action(Action<string> Say, Action<string> Print, Action<string> Run, Func<string, object> GetVariable)
 {{
-{text}
+{code}
 }}
 ");
 
