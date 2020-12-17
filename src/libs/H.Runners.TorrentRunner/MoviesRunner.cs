@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using H.Core;
 using H.Core.Runners;
 using H.Core.Settings;
 
@@ -112,7 +113,7 @@ namespace H.Runners
             Run($"explorer {path}");
         }
 
-        private async Task CheckTorrentAsync(string text, CancellationToken _ = default)
+        private async Task CheckTorrentAsync(string text, CancellationToken cancellationToken = default)
         {
             if (!AutoTorrent && !await WaitAccept("Скачать с торрента?", 3000, "скачай", "скачать")
                 .ConfigureAwait(false))
@@ -120,7 +121,7 @@ namespace H.Runners
                 return;
             }
 
-            await RunAsync($"torrent {text}").ConfigureAwait(false);
+            await RunAsync(new Command("torrent", "text"), cancellationToken).ConfigureAwait(false);
         }
 
         private static Tuple<int, string> GetDistance(string path, string text)
