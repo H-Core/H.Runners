@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core.Runners;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.InputFiles;
 
 namespace H.Runners
 {
@@ -49,7 +51,8 @@ namespace H.Runners
             AddSetting(nameof(ProxyIp), o => ProxyIp = o, Always, string.Empty);
             AddSetting(nameof(ProxyPort), o => ProxyPort = o, Always, 0);
                    
-            Add(new AsyncAction("telegram", SendMessageAsync, "message"));
+            Add(new AsyncAction("telegram text", SendMessageAsync, "message"));
+            Add(new AsyncAction("telegram audio", SendAudioAsync, "bytes"));
         }
 
         /// <summary>
@@ -87,14 +90,26 @@ namespace H.Runners
 
         #region Private methods
 
-        private async Task SendMessageAsync(string text, CancellationToken cancellationToken = default)
+        private async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
         {
             var isProxy = !string.IsNullOrWhiteSpace(ProxyIp) && Positive(ProxyPort);
             var client = isProxy
                 ? new TelegramBotClient(Token, new WebProxy(ProxyIp, ProxyPort))
                 : new TelegramBotClient(Token);
             
-            await client.SendTextMessageAsync(new ChatId(UserId), text, cancellationToken: cancellationToken)
+            await client.SendTextMessageAsync(new ChatId(UserId), message, cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        private async Task SendAudioAsync(byte[] bytes, CancellationToken cancellationToken = default)
+        {
+            var isProxy = !string.IsNullOrWhiteSpace(ProxyIp) && Positive(ProxyPort);
+            var client = isProxy
+                ? new TelegramBotClient(Token, new WebProxy(ProxyIp, ProxyPort))
+                : new TelegramBotClient(Token);
+
+            using var stream = new MemoryStream(bytes);
+            await client.SendAudioAsync(new ChatId(UserId), new InputOnlineFile(stream), cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
 
