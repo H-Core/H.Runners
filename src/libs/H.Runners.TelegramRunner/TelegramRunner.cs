@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,12 +21,12 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public long UserId { get; set; }
+        public long DefaultUserId { get; set; }
         
         /// <summary>
         /// 
         /// </summary>
-        public string Username { get; set; } = string.Empty;
+        public string DefaultUsername { get; set; } = string.Empty;
 
         /// <summary>
         /// 
@@ -52,13 +53,26 @@ namespace H.Runners
         public TelegramRunner()
         {
             AddSetting(nameof(Token), o => Token = o, TokenIsValid, Token);
-            AddSetting(nameof(UserId), o => UserId = o, Always, UserId);
-            AddSetting(nameof(Username), o => Username = o, Any, Username);
+            AddSetting(nameof(DefaultUserId), o => DefaultUserId = o, Always, DefaultUserId);
+            AddSetting(nameof(DefaultUsername), o => DefaultUsername = o, Any, DefaultUsername);
             AddSetting(nameof(ProxyIp), o => ProxyIp = o, Always, ProxyIp);
             AddSetting(nameof(ProxyPort), o => ProxyPort = o, Always, ProxyPort);
                    
-            Add(new AsyncAction("telegram text", SendMessageAsync, "message"));
-            Add(new AsyncAction("telegram audio", SendAudioAsync, "mp3 bytes"));
+            Add(AsyncAction.WithCommand("telegram message", (command, cancellationToken) =>
+            {
+                var message = command.Value.Arguments.ElementAt(0);
+                var to = command.Value.Arguments.ElementAtOrDefault(1);
+                
+                return SendMessageAsync(message, to, cancellationToken);
+            }, "Arguments: text, to?"));
+            Add(AsyncAction.WithCommand("telegram audio", (command, cancellationToken) =>
+            {
+                var bytes = command.Value.Data;
+                var to = command.Value.Arguments.ElementAtOrDefault(0);
+                var preview = command.Value.Arguments.ElementAtOrDefault(1);
+
+                return SendAudioAsync(bytes, to, preview, cancellationToken);
+            }, "Data: mp3 bytes. Arguments: to?, preview?"));
         }
 
         /// <summary>
@@ -73,25 +87,11 @@ namespace H.Runners
                 return false;
             }
 
-            try
-            {
-                var unused = new TelegramBotClient(token);
+            var parts = token.Split(':');
 
-                return true;
-            }
-            catch (ArgumentException)
-            {
-                return false;
-            }
+            return parts.Length > 1 && int.TryParse(parts[0], out _);
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="usedId"></param>
-        /// <returns></returns>
-        public static bool UsedIdIsValid(int usedId) => usedId > 0;
-
+        
         #endregion
 
         #region Private methods
@@ -105,29 +105,41 @@ namespace H.Runners
                 : new TelegramBotClient(Token);
         }
         
-        private ChatId GetChatId()
+        private ChatId GetChatId(string? to = null)
         {
-            return string.IsNullOrWhiteSpace(Username)
-                ? new ChatId(UserId)
-                : new ChatId(Username);
+            to ??= string.Empty;
+
+            if (long.TryParse(to, out var result))
+            {
+                return new ChatId(result);
+            }
+            if (!string.IsNullOrWhiteSpace(to))
+            {
+                return new ChatId(to);
+            }
+            
+            return string.IsNullOrWhiteSpace(DefaultUsername)
+                ? new ChatId(DefaultUserId)
+                : new ChatId(DefaultUsername);
         }
         
         #endregion
 
         #region Public methods
-        
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
+        /// <param name="to"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
+        public async Task SendMessageAsync(string message, string? to = null, CancellationToken cancellationToken = default)
         {
             message = message ?? throw new ArgumentNullException(nameof(message));
             
             var client = GetClient();
-            var chatId = GetChatId();
+            var chatId = GetChatId(to);
 
             await client.SendTextMessageAsync(chatId, message, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
@@ -137,18 +149,20 @@ namespace H.Runners
         /// Sends mp3.
         /// </summary>
         /// <param name="stream"></param>
+        /// <param name="to"></param>
+        /// <param name="preview"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SendAudioAsync(Stream stream, CancellationToken cancellationToken = default)
+        public async Task SendAudioAsync(Stream stream, string? to = null, string? preview = null, CancellationToken cancellationToken = default)
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
 
             var client = GetClient();
-            var chatId = GetChatId();
+            var chatId = GetChatId(to);
 
             await client.SendAudioAsync(
                     chatId, 
-                    new InputOnlineFile(stream), 
+                    new InputOnlineFile(stream, preview ?? "Message"), 
                     cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
@@ -157,15 +171,17 @@ namespace H.Runners
         /// Sends mp3.
         /// </summary>
         /// <param name="bytes"></param>
+        /// <param name="to"></param>
+        /// <param name="preview"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SendAudioAsync(byte[] bytes, CancellationToken cancellationToken = default)
+        public async Task SendAudioAsync(byte[] bytes, string? to = null, string? preview = null, CancellationToken cancellationToken = default)
         {
             bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
 
             using var stream = new MemoryStream(bytes);
             
-            await SendAudioAsync(stream, cancellationToken).ConfigureAwait(false);
+            await SendAudioAsync(stream, to, preview, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
