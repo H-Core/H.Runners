@@ -53,10 +53,10 @@ namespace H.Runners
         public TelegramRunner()
         {
             AddSetting(nameof(Token), o => Token = o, TokenIsValid, Token);
-            AddSetting(nameof(DefaultUserId), o => DefaultUserId = o, Always, DefaultUserId);
+            AddSetting(nameof(DefaultUserId), o => DefaultUserId = o, Any, DefaultUserId);
             AddSetting(nameof(DefaultUsername), o => DefaultUsername = o, Any, DefaultUsername);
-            AddSetting(nameof(ProxyIp), o => ProxyIp = o, Always, ProxyIp);
-            AddSetting(nameof(ProxyPort), o => ProxyPort = o, Always, ProxyPort);
+            AddSetting(nameof(ProxyIp), o => ProxyIp = o, Any, ProxyIp);
+            AddSetting(nameof(ProxyPort), o => ProxyPort = o, Any, ProxyPort);
                    
             Add(AsyncAction.WithCommand("telegram message", (command, cancellationToken) =>
             {

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using H.Core;
 using H.Core.Runners;
 using H.Core.Settings;
 using HtmlAgilityPack;
 using MonoTorrent.Common;
+using Process = System.Diagnostics.Process;
 
 namespace H.Runners
 {
@@ -48,15 +49,15 @@ namespace H.Runners
             AddSetting(nameof(SaveTo), o => SaveTo = o, NoEmpty, SaveTo, SettingType.Folder);
             AddSetting(nameof(QBitTorrentPath), o => QBitTorrentPath = o, FileExists, QBitTorrentPath, SettingType.Path);
             AddSetting(nameof(MpcPath), o => MpcPath = o, FileExists, MpcPath, SettingType.Path);
-            AddSetting(nameof(MaxDelaySeconds), o => MaxDelaySeconds = o, Always, MaxDelaySeconds);
+            AddSetting(nameof(MaxDelaySeconds), o => MaxDelaySeconds = o, Any, MaxDelaySeconds);
             AddSetting(nameof(SearchPattern), o => SearchPattern = o, NoEmpty, SearchPattern);
-            AddSetting(nameof(MinSizeGb), o => MinSizeGb = o, Always, MinSizeGb);
-            AddSetting(nameof(MaxSizeGb), o => MaxSizeGb = o, Always, MaxSizeGb);
-            AddSetting(nameof(Extension), o => Extension = o, Always, Extension);
-            AddSetting(nameof(StartSizeMb), o => StartSizeMb = o, Always, StartSizeMb);
-            AddSetting(nameof(MaxSearchResults), o => MaxSearchResults = o, Always, MaxSearchResults);
+            AddSetting(nameof(MinSizeGb), o => MinSizeGb = o, Any, MinSizeGb);
+            AddSetting(nameof(MaxSizeGb), o => MaxSizeGb = o, Any, MaxSizeGb);
+            AddSetting(nameof(Extension), o => Extension = o, Any, Extension);
+            AddSetting(nameof(StartSizeMb), o => StartSizeMb = o, Any, StartSizeMb);
+            AddSetting(nameof(MaxSearchResults), o => MaxSearchResults = o, Any, MaxSearchResults);
 
-            Add(new AsyncAction("torrent", TorrentAsync, "name"));
+            Add(AsyncAction.WithSingleArgument("torrent", TorrentAsync, "name"));
 
             Settings.PropertyChanged += (_, _) =>
             {
@@ -181,32 +182,30 @@ namespace H.Runners
 
         private async Task TorrentAsync(string text, CancellationToken cancellationToken = default)
         {
-            Say($"Ищу торрент {text}");
+            this.Say($"Ищу торрент {text}");
 
             var query = SearchPattern.Replace("*", text);
-            OnLogReceived($"Search Query: {query}");
-            var urls = await SearchInInternet(query, MaxSearchResults);
-            OnLogReceived($"Search Urls: {Environment.NewLine}{string.Join(Environment.NewLine, urls)}");
+            var urls = await this.SearchAsync(query, cancellationToken); //, MaxSearchResults
             if (!urls.Any())
             {
-                await SayAsync("Поиск в гугле не дал результатов", cancellationToken);
+                await this.SayAsync("Поиск в гугле не дал результатов", cancellationToken);
                 return;
             }
 
             var torrents = await GetTorrents(urls);
-            OnLogReceived($"Torrents({torrents.Length})");
+            this.Print($"Torrents({torrents.Length})");
 
             var files = await DownloadFiles(torrents);
-            OnLogReceived($"Files({torrents.Length})");
+            this.Print($"Files({torrents.Length})");
 
             var path = FindBestTorrent(files);
             if (path == null)
             {
-                await SayAsync("Не найден подходящий торрент", cancellationToken);
+                await this.SayAsync("Не найден подходящий торрент", cancellationToken);
                 return;
             }
 
-            Say("Нашла!");
+            this.Say("Нашла!");
             await QTorrentCommand(path);
         }
 
@@ -223,13 +222,15 @@ namespace H.Runners
                 var temp = Path.GetTempFileName();
                 File.Copy(torrentPath, temp, true);
 
-                Process.Start(QBitTorrentPath, $"--sequential --first-and-last --skip-dialog=true --save-path=\"{DownloadsFolder}\" {temp}");
-                Say(@"Загружаю. Запущу, когда загрузится базовая часть");
+                Process.Start(
+                    QBitTorrentPath, 
+                    $"--sequential --first-and-last --skip-dialog=true --save-path=\"{DownloadsFolder}\" {temp}");
+                this.Say(@"Загружаю. Запущу, когда загрузится базовая часть");
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-                Say(@"Ошибка загрузки");
-                OnLogReceived(e.ToString());
+                this.Say(@"Ошибка загрузки");
+                OnExceptionOccurred(exception);
                 return;
             }
 
@@ -237,7 +238,7 @@ namespace H.Runners
 
             if (!RunCommand(path))
             {
-                Say(@"Файл не найден или еще не загружен");
+                this.Say(@"Файл не найден или еще не загружен");
             }
         }
 
@@ -255,7 +256,7 @@ namespace H.Runners
                 // Every 5 seconds
                 if (seconds % 5 == 0)
                 {
-                    Print($"Progress: {size}/{requiredSize}({percents:F2}%)");
+                    this.Print($"Progress: {size}/{requiredSize}({percents:F2}%)");
                 }
 
                 if (size < uint.MaxValue - 1 &&
@@ -311,7 +312,7 @@ namespace H.Runners
                 Process.Start(path);
             }
 
-            Say(@"Запускаю");
+            this.Say(@"Запускаю");
 
             return true;
         }

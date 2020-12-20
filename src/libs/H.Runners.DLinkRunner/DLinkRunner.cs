@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using H.Core;
 using H.Core.Runners;
 
 namespace H.Runners
@@ -41,11 +42,11 @@ namespace H.Runners
         /// </summary>
         public DLinkRunner()
         {
-            AddSetting(nameof(Url), o => Url = o, Always, Url);
-            AddSetting(nameof(Login), o => Login = o, Always, Login);
-            AddSetting(nameof(Password), o => Password = o, Always, Password);
+            AddSetting(nameof(Url), o => Url = o, Any, Url);
+            AddSetting(nameof(Login), o => Login = o, Any, Login);
+            AddSetting(nameof(Password), o => Password = o, Any, Password);
 
-            Add(new AsyncAction("reload-router", ReloadRouter));
+            Add(AsyncAction.WithoutArguments("reload-router", ReloadRouter));
         }
 
         #endregion
@@ -79,11 +80,11 @@ namespace H.Runners
             using var response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             if (!response.IsSuccessStatusCode)
             {
-                Print($"Bad Response: {response}");
+                this.Print($"Bad Response: {response}");
                 return;
             }
 
-            Print("Reloading in process");
+            this.Print("Reloading in process");
         }
 
         #endregion

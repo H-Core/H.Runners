@@ -1,5 +1,6 @@
 ﻿using System;
 using CSScriptLibrary;
+using H.Core;
 using H.Core.Runners;
 
 namespace H.Runners
@@ -27,7 +28,7 @@ namespace H.Runners
         private void RunCode(string code)
         {
             var action = CSScript.Evaluator
-                .LoadDelegate<Action<Action<string>, Action<string>, Action<string>, Func<string, object?>>>($@"
+                .LoadDelegate<Action<Action<string>, Action<string>, Action<string>>>($@"
 using System;
 using System.IO;
 using System.Xml;
@@ -38,13 +39,13 @@ using System.Timers;
 using System.Threading;
 using System.Threading.Tasks;
 
-void Action(Action<string> Say, Action<string> Print, Action<string> Run, Func<string, object> GetVariable)
+void Action(Action<string> Say, Action<string> Print, Action<string> Run)
 {{
 {code}
 }}
 ");
 
-            action(Say, Print, Run, GetVariable);
+            action(this.Say, this.Print, value => Run(Command.Parse(value)));
         }
 
         #endregion

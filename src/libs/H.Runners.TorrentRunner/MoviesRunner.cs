@@ -38,9 +38,9 @@ namespace H.Runners
             AddSetting(nameof(Folder3), o => Folder3 = o, NoEmpty, Folder3, SettingType.Folder);
             AddSetting(nameof(MoviesExtensions), o => MoviesExtensions = o, NoEmpty, MoviesExtensions);
             AddSetting(nameof(MaximumDistance), o => MaximumDistance = o, Positive, MaximumDistance);
-            AddSetting(nameof(AutoTorrent), o => AutoTorrent = o, Always, AutoTorrent);
+            AddSetting(nameof(AutoTorrent), o => AutoTorrent = o, Any, AutoTorrent);
 
-            Add(new AsyncAction("find-movie", FindMovieCommandAsync, "name"));
+            Add(AsyncAction.WithSingleArgument("find-movie", FindMovieCommandAsync, "name"));
         }
 
         #endregion
@@ -52,18 +52,18 @@ namespace H.Runners
             if (string.IsNullOrWhiteSpace(Folder) || 
                 !Directory.Exists(Folder))
             {
-                await SayAsync("Директория фильмов не найдена. Пожалуйста, укажите ее и попробуйте снова");
+                this.Say("Директория фильмов не найдена. Пожалуйста, укажите ее и попробуйте снова");
 
-                ShowSettings();
+                this.ShowSettings();
                 return;
             }
 
-            await SayAsync($"Ищу фильм {name}");
+            this.Say($"Ищу фильм {name}");
 
             var files = GetFiles(Folder, Folder2, Folder3);
             if (!files.Any())
             {
-                await SayAsync("Ничего не найдено");
+                this.Say("Ничего не найдено");
                 await CheckTorrentAsync(name, cancellationToken);
                 return;
             }
@@ -85,9 +85,9 @@ namespace H.Runners
             var minimumDistance = minimumItem?.Item1 ?? int.MaxValue;
             if (minimumDistance > MaximumDistance)
             {
-                Print($"Ближайшее совпадение: дистанция {minimumDistance} и строка {minimumItem?.Item2}");
+                this.Print($"Ближайшее совпадение: дистанция {minimumDistance} и строка {minimumItem?.Item2}");
 
-                await SayAsync("Ничего подходящего не найдено");
+                this.Say("Ничего подходящего не найдено");
                 await CheckTorrentAsync(name, cancellationToken);
                 return;
             }
@@ -95,33 +95,37 @@ namespace H.Runners
             var goodDistances = distances.Where(i => Math.Abs(i.Item1 - minimumDistance) <= 2).Distinct().ToList();
             if (goodDistances.Count == 1)
             {
-                await StartMovieAsync(goodDistances[0].Item2, cancellationToken);
+                StartMovie(goodDistances[0].Item2);
                 return;
             }
 
             foreach (var distance in goodDistances)
             {
-                Print($"File {distance.Item2}. Distance: {distance.Item1}");
+                this.Print($"File {distance.Item2}. Distance: {distance.Item1}");
             }
 
-            await StartMovieAsync(goodDistances[0].Item2, cancellationToken);
+            StartMovie(goodDistances[0].Item2);
         }
 
-        private async Task StartMovieAsync(string path, CancellationToken _ = default)
+        private void StartMovie(string path)
         {
-            await SayAsync("Нашла. Запускаю").ConfigureAwait(false);
+            this.Say("Нашла. Запускаю");
             Run($"explorer {path}");
         }
 
         private async Task CheckTorrentAsync(string text, CancellationToken cancellationToken = default)
         {
-            if (!AutoTorrent && !await WaitAccept("Скачать с торрента?", 3000, "скачай", "скачать")
+            if (!AutoTorrent && !await this.WaitAccept(
+                "Скачать с торрента?",
+                TimeSpan.FromSeconds(3), 
+                cancellationToken, 
+                "скачай", "скачать")
                 .ConfigureAwait(false))
             {
                 return;
             }
 
-            await RunAsync(new Command("torrent", "text"), cancellationToken).ConfigureAwait(false);
+            await RunAsync(new Command("torrent", text), cancellationToken).ConfigureAwait(false);
         }
 
         private static Tuple<int, string> GetDistance(string path, string text)
