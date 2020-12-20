@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.15.3" />
+    <PackageReference Include="H.Core" Version="0.17.8" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
   </ItemGroup>
 

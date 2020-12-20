@@ -128,16 +128,14 @@ namespace H.Runners
                 var temp = Directory.CreateDirectory(Path.Combine(Path.GetTempPath(), "TorrentRunnerFiles")).FullName;
                 var path = Path.Combine(temp, $"file_{i}");
 
-                using (var client = new WebClient())
+                using var client = new WebClient();
+                try
                 {
-                    try
-                    {
-                        await client.DownloadFileTaskAsync(url, path);
-                    }
-                    catch (Exception)
-                    {
-                        // ignored
-                    }
+                    await client.DownloadFileTaskAsync(url, path);
+                }
+                catch (Exception)
+                {
+                    // ignored
                 }
 
                 return path;
@@ -191,7 +189,7 @@ namespace H.Runners
             OnLogReceived($"Search Urls: {Environment.NewLine}{string.Join(Environment.NewLine, urls)}");
             if (!urls.Any())
             {
-                await SayAsync("Поиск в гугле не дал результатов");
+                await SayAsync("Поиск в гугле не дал результатов", cancellationToken);
                 return;
             }
 
@@ -204,7 +202,7 @@ namespace H.Runners
             var path = FindBestTorrent(files);
             if (path == null)
             {
-                await SayAsync("Не найден подходящий торрент");
+                await SayAsync("Не найден подходящий торрент", cancellationToken);
                 return;
             }
 
@@ -226,7 +224,7 @@ namespace H.Runners
                 File.Copy(torrentPath, temp, true);
 
                 Process.Start(QBitTorrentPath, $"--sequential --first-and-last --skip-dialog=true --save-path=\"{DownloadsFolder}\" {temp}");
-                Say(@"Загружаю. Запущу, когда загрузиться базовая часть");
+                Say(@"Загружаю. Запущу, когда загрузится базовая часть");
             }
             catch (Exception e)
             {
