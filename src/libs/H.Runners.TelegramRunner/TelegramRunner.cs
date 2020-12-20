@@ -20,7 +20,12 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public int UserId { get; set; }
+        public long UserId { get; set; }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Username { get; set; } = string.Empty;
 
         /// <summary>
         /// 
@@ -46,13 +51,14 @@ namespace H.Runners
         /// </summary>
         public TelegramRunner()
         {
-            AddSetting(nameof(Token), o => Token = o, TokenIsValid, string.Empty);
-            AddSetting(nameof(UserId), o => UserId = o, UsedIdIsValid, 0);
-            AddSetting(nameof(ProxyIp), o => ProxyIp = o, Always, string.Empty);
-            AddSetting(nameof(ProxyPort), o => ProxyPort = o, Always, 0);
+            AddSetting(nameof(Token), o => Token = o, TokenIsValid, Token);
+            AddSetting(nameof(UserId), o => UserId = o, Always, UserId);
+            AddSetting(nameof(Username), o => Username = o, Any, Username);
+            AddSetting(nameof(ProxyIp), o => ProxyIp = o, Always, ProxyIp);
+            AddSetting(nameof(ProxyPort), o => ProxyPort = o, Always, ProxyPort);
                    
             Add(new AsyncAction("telegram text", SendMessageAsync, "message"));
-            Add(new AsyncAction("telegram audio", SendAudioAsync, "bytes"));
+            Add(new AsyncAction("telegram audio", SendAudioAsync, "mp3 bytes"));
         }
 
         /// <summary>
@@ -90,27 +96,76 @@ namespace H.Runners
 
         #region Private methods
 
-        private async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
+        private TelegramBotClient GetClient()
         {
             var isProxy = !string.IsNullOrWhiteSpace(ProxyIp) && Positive(ProxyPort);
-            var client = isProxy
+
+            return isProxy
                 ? new TelegramBotClient(Token, new WebProxy(ProxyIp, ProxyPort))
                 : new TelegramBotClient(Token);
+        }
+        
+        private ChatId GetChatId()
+        {
+            return string.IsNullOrWhiteSpace(Username)
+                ? new ChatId(UserId)
+                : new ChatId(Username);
+        }
+        
+        #endregion
+
+        #region Public methods
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task SendMessageAsync(string message, CancellationToken cancellationToken = default)
+        {
+            message = message ?? throw new ArgumentNullException(nameof(message));
             
-            await client.SendTextMessageAsync(new ChatId(UserId), message, cancellationToken: cancellationToken)
+            var client = GetClient();
+            var chatId = GetChatId();
+
+            await client.SendTextMessageAsync(chatId, message, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
         }
 
-        private async Task SendAudioAsync(byte[] bytes, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// Sends mp3.
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task SendAudioAsync(Stream stream, CancellationToken cancellationToken = default)
         {
-            var isProxy = !string.IsNullOrWhiteSpace(ProxyIp) && Positive(ProxyPort);
-            var client = isProxy
-                ? new TelegramBotClient(Token, new WebProxy(ProxyIp, ProxyPort))
-                : new TelegramBotClient(Token);
+            stream = stream ?? throw new ArgumentNullException(nameof(stream));
+
+            var client = GetClient();
+            var chatId = GetChatId();
+
+            await client.SendAudioAsync(
+                    chatId, 
+                    new InputOnlineFile(stream), 
+                    cancellationToken: cancellationToken)
+                .ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends mp3.
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task SendAudioAsync(byte[] bytes, CancellationToken cancellationToken = default)
+        {
+            bytes = bytes ?? throw new ArgumentNullException(nameof(bytes));
 
             using var stream = new MemoryStream(bytes);
-            await client.SendAudioAsync(new ChatId(UserId), new InputOnlineFile(stream), cancellationToken: cancellationToken)
-                .ConfigureAwait(false);
+            
+            await SendAudioAsync(stream, cancellationToken).ConfigureAwait(false);
         }
 
         #endregion
