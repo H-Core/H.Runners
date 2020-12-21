@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using H.Core;
 using H.Core.Runners;
 using Telegram.Bot;
 using Telegram.Bot.Types;
@@ -43,6 +44,25 @@ namespace H.Runners
         /// </summary>
         public int ProxyPort { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public TelegramBotClient? Client { get; set; }
+
+        #endregion
+
+        #region Events
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public event EventHandler<string>? MessageReceived;
+
+        private void OnMessageReceived(string value)
+        {
+            MessageReceived?.Invoke(this, value);
+        }
+
         #endregion
 
         #region Constructors
@@ -57,7 +77,10 @@ namespace H.Runners
             AddSetting(nameof(DefaultUsername), o => DefaultUsername = o, Any, DefaultUsername);
             AddSetting(nameof(ProxyIp), o => ProxyIp = o, Any, ProxyIp);
             AddSetting(nameof(ProxyPort), o => ProxyPort = o, Any, ProxyPort);
-                   
+
+            Add(SyncAction.WithoutArguments("telegram start-receiving", StartReceiving));
+            Add(SyncAction.WithoutArguments("telegram stop-receiving", StopReceiving));
+
             Add(AsyncAction.WithCommand("telegram message", (command, cancellationToken) =>
             {
                 var message = command.Value.Arguments.ElementAt(0);
@@ -143,6 +166,32 @@ namespace H.Runners
 
             await client.SendTextMessageAsync(chatId, message, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public void StartReceiving()
+        {
+            Client ??= GetClient();
+            Client.StartReceiving();
+            Client.OnMessage += (_, args) =>
+            {
+                var value = $"{args.Message.From.Username}: {args.Message.Text}";
+                
+                OnMessageReceived(value);
+                this.Print(value);
+            };
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public void StopReceiving()
+        {
+            Client?.StopReceiving();
         }
 
         /// <summary>

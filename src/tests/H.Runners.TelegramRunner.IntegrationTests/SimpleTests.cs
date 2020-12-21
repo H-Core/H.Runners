@@ -64,5 +64,24 @@ namespace H.Runners.IntegrationTests
 
             await runner.SendAudioAsync(stream, "482553595", nameof(SendAudioToTest), cancellationToken);
         }
+
+        [TestMethod]
+        public async Task StartReceivingTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            using var runner = CreateTelegramRunner();
+            runner.MessageReceived += (_, message) =>
+            {
+                Console.WriteLine($"{nameof(runner.MessageReceived)}: {message}");
+            };
+
+            runner.StartReceiving();
+
+            await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken);
+            
+            runner.StopReceiving();
+        }
     }
 }
