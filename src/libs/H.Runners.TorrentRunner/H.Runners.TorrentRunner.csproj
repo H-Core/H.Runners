@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net4.8</TargetFramework>
+    <TargetFramework>net4.6</TargetFramework>
     <RootNamespace>H.Runners</RootNamespace>
     <NoWarn>$(NoWarn);CA1814;CA1304;CA1031</NoWarn>
   </PropertyGroup>
@@ -15,18 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="MonoTorrent, Version=0.80.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>libraries\MonoTorrent.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="MonoTorrent.Dht">
-      <HintPath>libraries\MonoTorrent.Dht.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="H.Core" Version="0.18.4" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
+    <PackageReference Include="OctoTorrent" Version="0.1.8-rc" />
+    <PackageReference Include="OctoTorrent.Dht" Version="0.1.6" />
   </ItemGroup>
 
 </Project>

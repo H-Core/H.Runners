@@ -11,7 +11,7 @@ using H.Core.Settings;
 using H.Runners.Extensions;
 using H.Runners.Utilities;
 using HtmlAgilityPack;
-using MonoTorrent.Common;
+using OctoTorrent.Common;
 using Process = System.Diagnostics.Process;
 
 namespace H.Runners
