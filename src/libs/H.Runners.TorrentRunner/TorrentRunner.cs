@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
 using H.Core.Runners;
 using H.Core.Settings;
+using H.Runners.Extensions;
+using H.Runners.Utilities;
 using HtmlAgilityPack;
 using MonoTorrent.Common;
 using Process = System.Diagnostics.Process;
@@ -23,8 +23,8 @@ namespace H.Runners
     {
         #region Properties
 
-        private string SaveTo { get; set; } = string.Empty;
-        private string QBitTorrentPath { get; set; } = string.Empty;
+        private string SaveTo { get; set; } = Path.Combine(Path.GetTempPath(), "H.Runners.TorrentRunner");
+        private string QBitTorrentPath { get; set; } = @"C:\Program Files\qBittorrent\qbittorrent.exe";
         private string MpcPath { get; set; } = @"C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64_nvo.exe";
         private int MaxDelaySeconds { get; set; } = 60;
         private string SearchPattern { get; set; } = "download torrent *";
@@ -34,8 +34,8 @@ namespace H.Runners
         private double StartSizeMb { get; set; } = 20.0;
         private int MaxSearchResults { get; set; } = 3;
 
-        private string TorrentsFolder => Path.Combine(SaveTo, "Torrents");
-        private string DownloadsFolder => Path.Combine(SaveTo, "Downloads");
+        private string TorrentsFolder => Directory.CreateDirectory(Path.Combine(SaveTo, "Torrents")).FullName;
+        private string DownloadsFolder => Directory.CreateDirectory(Path.Combine(SaveTo, "Downloads")).FullName;
 
         #endregion
 
@@ -77,12 +77,14 @@ namespace H.Runners
 
         #region Private methods
 
-        private static string[] GetTorrentsFromUrl(string url)
+        private static async Task<string[]> GetTorrentsFromUrlAsync(
+            string url, 
+            CancellationToken cancellationToken = default)
         {
             try
             {
                 var web = new HtmlWeb();
-                var document = web.Load(url);
+                var document = await web.LoadFromWebAsync(url, cancellationToken);
 
                 var torrents = document.DocumentNode
                     .SelectNodes("//a[@href]")
@@ -143,16 +145,14 @@ namespace H.Runners
             }));
         }
 
-        private static async Task<string[]> GetTorrents(string url)
+        private static async Task<string[]> GetTorrents(IEnumerable<string> urls, CancellationToken cancellationToken = default)
         {
-            return await Task.Run(() => GetTorrentsFromUrl(url));
-        }
+            var values = await Task.WhenAll(
+                urls.Select(url => GetTorrentsFromUrlAsync(url, cancellationToken)));
 
-        private static async Task<string[]> GetTorrents(ICollection<string> urls)
-        {
-            var array = await Task.WhenAll(urls.Select(async i => await GetTorrents(i)));
-
-            return array.SelectMany(i => i).ToArray();
+            return values
+                .SelectMany(value => value)
+                .ToArray();
         }
 
         private string? FindBestTorrent(ICollection<string> files)
@@ -180,7 +180,13 @@ namespace H.Runners
             return bestTorrent?.TorrentPath;
         }
 
-        private async Task TorrentAsync(string text, CancellationToken cancellationToken = default)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task TorrentAsync(string text, CancellationToken cancellationToken = default)
         {
             this.Say($"Ищу торрент {text}");
 
@@ -192,7 +198,7 @@ namespace H.Runners
                 return;
             }
 
-            var torrents = await GetTorrents(urls);
+            var torrents = await GetTorrents(urls, cancellationToken);
             this.Print($"Torrents({torrents.Length})");
 
             var files = await DownloadFiles(torrents);
@@ -212,10 +218,10 @@ namespace H.Runners
         private async Task QTorrentCommand(string torrentPath)
         {
             var path = GetFilePath(torrentPath);
-            if (RunCommand(path))
-            {
-                return;
-            }
+            //if (RunCommand(path))
+            //{
+            //    return;
+            //}
 
             try
             {
@@ -234,23 +240,24 @@ namespace H.Runners
                 return;
             }
 
-            await WaitDownloadCommand(path, StartSizeMb, MaxDelaySeconds);
-
-            if (!RunCommand(path))
-            {
-                this.Say(@"Файл не найден или еще не загружен");
-            }
+            await WaitDownloadCommandAsync(path, StartSizeMb, MaxDelaySeconds);
+            
+            await RunFileAsync(path);
         }
 
-        private async Task WaitDownloadCommand(string path, double requiredSizeMb, int maxDelaySeconds)
+        private async Task WaitDownloadCommandAsync(
+            string path, 
+            double requiredSizeMb, 
+            int maxDelaySeconds,
+            CancellationToken cancellationToken = default)
         {
             var seconds = 0;
             while (seconds < maxDelaySeconds)
             {
-                await Task.Delay(1000);
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
 
-                var size = GetFileSizeOnDisk(path);
-                var requiredSize = requiredSizeMb * 1000000;
+                var size = FileUtilities.GetFileSizeOnDisk(path);
+                var requiredSize = requiredSizeMb * 1_000_000;
                 var percents = 100.0 * size / requiredSize;
 
                 // Every 5 seconds
@@ -269,52 +276,25 @@ namespace H.Runners
             }
         }
 
-        private static long GetFileSizeOnDisk(string file)
-        {
-            var info = new FileInfo(file);
-            var label = info.Directory?.Root.FullName;
 
-            var result = GetDiskFreeSpaceW(label, out var sectorsPerCluster, out var bytesPerSector, out _, out _);
-            if (result == 0)
-            {
-                throw new Win32Exception();
-            }
-
-            var clusterSize = sectorsPerCluster * bytesPerSector;
-            var lowSize = GetCompressedFileSizeW(file, out var highSize);
-            var size = (long)highSize << 32 | lowSize;
-
-            return ((size + clusterSize - 1) / clusterSize) * clusterSize;
-        }
-
-        [DllImport("kernel32.dll")]
-        private static extern uint GetCompressedFileSizeW([In, MarshalAs(UnmanagedType.LPWStr)] string lpFileName,
-            [Out, MarshalAs(UnmanagedType.U4)] out uint lpFileSizeHigh);
-
-        [DllImport("kernel32.dll", SetLastError = true, PreserveSig = true)]
-        private static extern int GetDiskFreeSpaceW([In, MarshalAs(UnmanagedType.LPWStr)] string? lpRootPathName,
-            out uint lpSectorsPerCluster, out uint lpBytesPerSector, out uint lpNumberOfFreeClusters,
-            out uint lpTotalNumberOfClusters);
-
-        private bool RunCommand(string path)
+        private async Task RunFileAsync(string path, CancellationToken cancellationToken = default)
         {
             if (!File.Exists(path))
             {
-                return false;
+                throw new InvalidOperationException($"File is not exists: {path}");
             }
-            
-            if (File.Exists(MpcPath))
+
+            using var process = File.Exists(MpcPath)
+                ? Process.Start(MpcPath, $"/fullscreen \"{path}\"")
+                : Process.Start(path);
+            if (process == null)
             {
-                Process.Start(MpcPath, $"/fullscreen \"{path}\"");
-            }
-            else
-            {
-                Process.Start(path);
+                throw new InvalidOperationException("Process is null");
             }
 
             this.Say(@"Запускаю");
-
-            return true;
+            
+            await process.WaitForExitAsync(cancellationToken).ConfigureAwait(false);
         }
 
         private string GetFilePath(string torrentPath)
