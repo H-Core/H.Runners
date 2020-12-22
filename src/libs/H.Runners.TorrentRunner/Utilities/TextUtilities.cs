@@ -48,6 +48,9 @@ namespace H.Runners.Utilities
         /// <returns></returns>
         public static int MinimalLevenshteinDistance(string string1, string string2)
         {
+            string1 = string1 ?? throw new ArgumentNullException(nameof(string1));
+            string2 = string2 ?? throw new ArgumentNullException(nameof(string2));
+
             var bigString = string1.Length > string2.Length ? string1 : string2;
             var smallString = string1.Length > string2.Length ? string2 : string1;
 

@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net4.8</TargetFramework>
     <RootNamespace>H.Runners</RootNamespace>
+    <NoWarn>$(NoWarn);CA1814;CA1304;CA1031</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Label="Signing">
@@ -14,7 +15,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Remove="Microsoft.CodeAnalysis.FxCopAnalyzers" />
     <Reference Include="MonoTorrent, Version=0.80.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>libraries\MonoTorrent.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>

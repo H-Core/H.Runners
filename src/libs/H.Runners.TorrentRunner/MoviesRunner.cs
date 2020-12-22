@@ -65,7 +65,7 @@ namespace H.Runners
             if (!files.Any())
             {
                 this.Say("Ничего не найдено");
-                await CheckTorrentAsync(name, cancellationToken);
+                await CheckTorrentAsync(name, cancellationToken).ConfigureAwait(false);
                 return;
             }
 
@@ -89,7 +89,7 @@ namespace H.Runners
                 this.Print($"Ближайшее совпадение: дистанция {minimumDistance} и строка {minimumItem?.Item2}");
 
                 this.Say("Ничего подходящего не найдено");
-                await CheckTorrentAsync(name, cancellationToken);
+                await CheckTorrentAsync(name, cancellationToken).ConfigureAwait(false);
                 return;
             }
 

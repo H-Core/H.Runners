@@ -84,24 +84,24 @@ namespace H.Runners
             try
             {
                 var web = new HtmlWeb();
-                var document = await web.LoadFromWebAsync(url, cancellationToken);
+                var document = await web.LoadFromWebAsync(url, cancellationToken).ConfigureAwait(false);
 
                 var torrents = document.DocumentNode
                     .SelectNodes("//a[@href]")
                     .Select(i => i.Attributes["href"].Value)
-                    .Where(i => i.EndsWith(".torrent"))
+                    .Where(i => i.EndsWith(".torrent", StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
                 var uri = new Uri(url);
                 var baseUrl = $"{uri.Scheme}://{uri.Host}";
+                
                 return torrents
                     .Select(i => i.Contains("http") ? i : $"{baseUrl}{i}")
                     .ToArray();
             }
             catch (Exception)
             {
-                //Log(exception.ToString());
-                return new string[0];
+                return Array.Empty<string>();
             }
         }
 
@@ -134,7 +134,7 @@ namespace H.Runners
                 using var client = new WebClient();
                 try
                 {
-                    await client.DownloadFileTaskAsync(url, path);
+                    await client.DownloadFileTaskAsync(url, path).ConfigureAwait(false);
                 }
                 catch (Exception)
                 {
@@ -142,13 +142,14 @@ namespace H.Runners
                 }
 
                 return path;
-            }));
+            })).ConfigureAwait(false);
         }
 
         private static async Task<string[]> GetTorrents(IEnumerable<string> urls, CancellationToken cancellationToken = default)
         {
             var values = await Task.WhenAll(
-                urls.Select(url => GetTorrentsFromUrlAsync(url, cancellationToken)));
+                urls.Select(url => GetTorrentsFromUrlAsync(url, cancellationToken)))
+                .ConfigureAwait(false);
 
             return values
                 .SelectMany(value => value)
@@ -191,28 +192,28 @@ namespace H.Runners
             this.Say($"Ищу торрент {text}");
 
             var query = SearchPattern.Replace("*", text);
-            var urls = await this.SearchAsync(query, cancellationToken); //, MaxSearchResults
+            var urls = await this.SearchAsync(query, cancellationToken).ConfigureAwait(false); //, MaxSearchResults
             if (!urls.Any())
             {
-                await this.SayAsync("Поиск в гугле не дал результатов", cancellationToken);
+                await this.SayAsync("Поиск в гугле не дал результатов", cancellationToken).ConfigureAwait(false);
                 return;
             }
 
-            var torrents = await GetTorrents(urls, cancellationToken);
+            var torrents = await GetTorrents(urls, cancellationToken).ConfigureAwait(false);
             this.Print($"Torrents({torrents.Length})");
 
-            var files = await DownloadFiles(torrents);
+            var files = await DownloadFiles(torrents).ConfigureAwait(false);
             this.Print($"Files({torrents.Length})");
 
             var path = FindBestTorrent(files);
             if (path == null)
             {
-                await this.SayAsync("Не найден подходящий торрент", cancellationToken);
+                await this.SayAsync("Не найден подходящий торрент", cancellationToken).ConfigureAwait(false);
                 return;
             }
 
             this.Say("Нашла!");
-            await QTorrentCommand(path);
+            await QTorrentCommand(path).ConfigureAwait(false);
         }
 
         private async Task QTorrentCommand(string torrentPath)
@@ -240,9 +241,9 @@ namespace H.Runners
                 return;
             }
 
-            await WaitDownloadCommandAsync(path, StartSizeMb, MaxDelaySeconds);
+            await WaitDownloadCommandAsync(path, StartSizeMb, MaxDelaySeconds).ConfigureAwait(false);
             
-            await RunFileAsync(path);
+            await RunFileAsync(path).ConfigureAwait(false);
         }
 
         private async Task WaitDownloadCommandAsync(
@@ -254,7 +255,7 @@ namespace H.Runners
             var seconds = 0;
             while (seconds < maxDelaySeconds)
             {
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
 
                 var size = FileUtilities.GetFileSizeOnDisk(path);
                 var requiredSize = requiredSizeMb * 1_000_000;
