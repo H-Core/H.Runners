@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
@@ -21,6 +22,11 @@ namespace H.Runners.IntegrationTests
             var cancellationToken = cancellationTokenSource.Token;
 
             using var runner = CreateTorrentRunner();
+            if (!File.Exists(runner.QBitTorrentPath))
+            {
+                Assert.Inconclusive("QBitTorrent is not installed.");
+            }
+            
             runner.CommandReceived += (_, value) => Console.WriteLine($"{value}");
             // Search command.
             runner.AsyncCommandReceived += (_, _, _) => Task.FromResult<IValue>(new Value(

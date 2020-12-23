@@ -23,16 +23,55 @@ namespace H.Runners
     {
         #region Properties
 
-        private string SaveTo { get; set; } = Path.Combine(Path.GetTempPath(), "H.Runners.TorrentRunner");
-        private string QBitTorrentPath { get; set; } = @"C:\Program Files\qBittorrent\qbittorrent.exe";
-        private string MpcPath { get; set; } = @"C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64_nvo.exe";
-        private int MaxDelaySeconds { get; set; } = 60;
-        private string SearchPattern { get; set; } = "download torrent *";
-        private double MinSizeGb { get; set; } = 1.0;
-        private double MaxSizeGb { get; set; } = 4.0;
-        private string Extension { get; set; } = string.Empty;
-        private double StartSizeMb { get; set; } = 20.0;
-        private int MaxSearchResults { get; set; } = 3;
+        /// <summary>
+        /// 
+        /// </summary>
+        public string SaveTo { get; set; } = Path.Combine(Path.GetTempPath(), "H.Runners.TorrentRunner");
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public string QBitTorrentPath { get; set; } = @"C:\Program Files\qBittorrent\qbittorrent.exe";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string MpcPath { get; set; } = @"C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64_nvo.exe";
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public int MaxDelaySeconds { get; set; } = 60;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public string SearchPattern { get; set; } = "download torrent *";
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public double MinSizeGb { get; set; } = 1.0;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public double MaxSizeGb { get; set; } = 4.0;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Extension { get; set; } = string.Empty;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public double StartSizeMb { get; set; } = 20.0;
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public int MaxSearchResults { get; set; } = 3;
 
         private string TorrentsFolder => Directory.CreateDirectory(Path.Combine(SaveTo, "Torrents")).FullName;
         private string DownloadsFolder => Directory.CreateDirectory(Path.Combine(SaveTo, "Downloads")).FullName;
