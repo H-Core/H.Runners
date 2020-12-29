@@ -38,9 +38,9 @@ namespace H.Runners
         {
             Add(new ProcessAction("select", async (process, _, cancellationToken) =>
             {
-                await SelectAsync(process, cancellationToken).ConfigureAwait(false);
+                var rectangle = await SelectAsync(process, cancellationToken).ConfigureAwait(false);
 
-                return Value.Empty;
+                return new Value($"{rectangle.Left}", $"{rectangle.Top}", $"{rectangle.Right}", $"{rectangle.Bottom}");
             }));
         }
 
@@ -54,8 +54,9 @@ namespace H.Runners
         /// <param name="process"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task SelectAsync(IProcess<ICommand> process, CancellationToken cancellationToken = default)
+        public async Task<Rectangle> SelectAsync(IProcess<ICommand> process, CancellationToken cancellationToken = default)
         {
+            var rectangle = new Rectangle(0, 0, 0, 0);
             var thread = new Thread(() =>
             {
                 var window = new RectangleWindow();
@@ -84,7 +85,7 @@ namespace H.Runners
 
                     await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-                    var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
+                    rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
                     if (rectangle.Width != 0 && rectangle.Height != 0)
                     {
                         OnNewRectangle(rectangle);
@@ -101,6 +102,8 @@ namespace H.Runners
             thread.Start();
             
             await Task.Run(thread.Join, cancellationToken).ConfigureAwait(false);
+
+            return rectangle;
         }
 
         private static Rectangle CalculateRectangle(Point startPoint, Point endPoint)

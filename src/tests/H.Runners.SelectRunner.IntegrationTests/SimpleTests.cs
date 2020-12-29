@@ -24,7 +24,8 @@ namespace H.Runners.IntegrationTests
 
             await process.StopAsync(cancellationToken);
 
-            await task;
+            var rectangle = await task;
+            Console.WriteLine($"{rectangle.Left}, {rectangle.Top}, {rectangle.Right}, {rectangle.Bottom}");
         }
 
         [TestMethod]
