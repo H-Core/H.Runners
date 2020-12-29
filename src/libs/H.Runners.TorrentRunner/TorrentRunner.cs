@@ -252,10 +252,10 @@ namespace H.Runners
             }
 
             this.Say("Нашла!");
-            await QTorrentCommand(path).ConfigureAwait(false);
+            await QTorrentCommandAsync(path, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task QTorrentCommand(string torrentPath)
+        private async Task QTorrentCommandAsync(string torrentPath, CancellationToken cancellationToken = default)
         {
             var path = GetFilePath(torrentPath);
             //if (RunCommand(path))
@@ -280,19 +280,18 @@ namespace H.Runners
                 return;
             }
 
-            await WaitDownloadCommandAsync(path, StartSizeMb, MaxDelaySeconds).ConfigureAwait(false);
+            await WaitDownloadCommandAsync(path, StartSizeMb, cancellationToken).ConfigureAwait(false);
             
-            await RunFileAsync(path).ConfigureAwait(false);
+            await RunFileAsync(path, cancellationToken).ConfigureAwait(false);
         }
 
         private async Task WaitDownloadCommandAsync(
             string path, 
             double requiredSizeMb, 
-            int maxDelaySeconds,
             CancellationToken cancellationToken = default)
         {
             var seconds = 0;
-            while (seconds < maxDelaySeconds)
+            while (true)
             {
                 await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken).ConfigureAwait(false);
 
@@ -315,7 +314,6 @@ namespace H.Runners
                 ++seconds;
             }
         }
-
 
         private async Task RunFileAsync(string path, CancellationToken cancellationToken = default)
         {

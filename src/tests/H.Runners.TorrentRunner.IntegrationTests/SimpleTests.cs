@@ -20,7 +20,7 @@ namespace H.Runners.IntegrationTests
         [TestMethod]
         public async Task TorrentTest()
         {
-            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromMinutes(5));
             var cancellationToken = cancellationTokenSource.Token;
 
             using var runner = CreateTorrentRunner();
@@ -34,7 +34,7 @@ namespace H.Runners.IntegrationTests
             {
                 Console.WriteLine($"{command}");
 
-                using var searcher = new YandexSearcher();
+                using var searcher = new GoogleSearcher();
                 var results = await searcher.SearchAsync(command.Input.Argument, token);
 
                 return new Value(results.Select(result => result.Url).ToArray());
