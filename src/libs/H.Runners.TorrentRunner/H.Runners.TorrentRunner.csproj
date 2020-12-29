@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net4.6</TargetFramework>
+    <TargetFrameworks>net4.6</TargetFrameworks>
     <RootNamespace>H.Runners</RootNamespace>
     <NoWarn>$(NoWarn);CA1814;CA1304;CA1031</NoWarn>
   </PropertyGroup>
@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.19.3" />
+    <PackageReference Include="H.Core" Version="0.19.4" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
     <PackageReference Include="OctoTorrent" Version="0.1.8-rc" />
     <PackageReference Include="OctoTorrent.Dht" Version="0.1.6" />
