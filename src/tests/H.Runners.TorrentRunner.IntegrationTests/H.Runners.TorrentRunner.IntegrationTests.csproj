@@ -5,10 +5,6 @@
     <RootNamespace>H.Runners.IntegrationTests</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Label="Signing">
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="H.IO" Version="1.0.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.0-preview-20201020-06" />

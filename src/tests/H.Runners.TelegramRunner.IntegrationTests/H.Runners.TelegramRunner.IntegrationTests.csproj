@@ -5,10 +5,6 @@
     <RootNamespace>H.Runners.IntegrationTests</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Label="Signing">
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Data\test.mp3" />
   </ItemGroup>
