@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using H.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Runners.IntegrationTests
@@ -16,9 +17,14 @@ namespace H.Runners.IntegrationTests
 
             using var runner = new SelectRunner();
 
-            runner.SelectAsync(TimeSpan.FromSeconds(5), cancellationToken);
+            var process = new Process<ICommand>();
+            var task = runner.SelectAsync(process, cancellationToken);
 
             await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            await process.StopAsync(cancellationToken);
+
+            await task;
         }
 
         [TestMethod]

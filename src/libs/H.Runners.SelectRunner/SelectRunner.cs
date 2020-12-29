@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using H.Core;
 using H.Core.Runners;
 using Point = System.Drawing.Point;
+using Timer = System.Timers.Timer;
 
 namespace H.Runners
 {
@@ -13,14 +15,6 @@ namespace H.Runners
     /// </summary>
     public class SelectRunner : Runner
     {
-        #region Properties
-
-        private RectangleWindow? Window { get; set; }
-        private Point StartPoint { get; set; }
-        private bool IsMouseDown { get; set; }
-
-        #endregion
-
         #region Events
 
         /// <summary>
@@ -42,6 +36,12 @@ namespace H.Runners
         /// </summary>
         public SelectRunner()
         {
+            Add(new ProcessAction("select", async (process, _, cancellationToken) =>
+            {
+                await SelectAsync(process, cancellationToken).ConfigureAwait(false);
+
+                return Value.Empty;
+            }));
         }
 
         #endregion
@@ -51,118 +51,77 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="timeout"></param>
+        /// <param name="process"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public void SelectAsync(TimeSpan timeout, CancellationToken cancellationToken = default)
+        public async Task SelectAsync(IProcess<ICommand> process, CancellationToken cancellationToken = default)
         {
-            var window = new RectangleWindow();
-
-            var startPoint = MouseUtilities.GetCursorPosition();
-
-            window.Border.Margin = new Thickness(
-                startPoint.X - window.Left,
-                startPoint.Y - window.Top,
-                window.Width + window.Left - startPoint.X,
-                window.Height + window.Top - startPoint.Y);
-            window.Border.Visibility = Visibility.Visible;
-
-            //while (!cancellationToken.IsCancellationRequested)
+            var thread = new Thread(() =>
             {
-                //await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken).ConfigureAwait(false);
-
-                var endPoint = new Point(1000, 1000);//MouseUtilities.GetCursorPosition();
-                var rectangle = CalculateRectangle(startPoint, endPoint);
-
-                //await window.Dispatcher.InvokeAsync(() =>
+                var window = new RectangleWindow();
+                var application = new Application();
+                application.Startup += async (_, _) =>
                 {
+                    using var timer = new Timer(20);
+
+                    var startPoint = MouseUtilities.GetCursorPosition();
+
+                    window.Border.Margin = new Thickness(
+                        startPoint.X - window.Left,
+                        startPoint.Y - window.Top,
+                        window.Width + window.Left - startPoint.X,
+                        window.Height + window.Top - startPoint.Y);
+                    window.Border.Visibility = Visibility.Visible;
+
+                    var endPoint = new Point(1000, 1000);//MouseUtilities.GetCursorPosition();
+                    var rectangle = CalculateRectangle(startPoint, endPoint);
+
                     window.Border.Margin = new Thickness(
                         rectangle.Left - window.Left,
                         rectangle.Top - window.Top,
                         window.Width + window.Left - rectangle.Left - rectangle.Width,
                         window.Height + window.Top - rectangle.Top - rectangle.Height);
-                }//);
-            }
 
-            window.Show();
-            //window.Hide();
+                    window.Show();
+
+                    timer.Elapsed += (_, _) =>
+                    {
+                        application.Dispatcher.Invoke(() =>
+                        {
+                            endPoint = MouseUtilities.GetCursorPosition();
+                            rectangle = CalculateRectangle(startPoint, endPoint);
+
+                            window.Border.Margin = new Thickness(
+                                rectangle.Left - window.Left,
+                                rectangle.Top - window.Top,
+                                window.Width + window.Left - rectangle.Left - rectangle.Width,
+                                window.Height + window.Top - rectangle.Top - rectangle.Height);
+                        });
+                    };
+
+                    timer.Start();
+
+                    await process.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+                    endPoint = MouseUtilities.GetCursorPosition();
+                    rectangle = CalculateRectangle(startPoint, endPoint);
+                    if (rectangle.Width != 0 && rectangle.Height != 0)
+                    {
+                        OnNewRectangle(rectangle);
+                    }
+
+                    application.Dispatcher.Invoke(() =>
+                    {
+                        application.Shutdown();
+                    });
+                };
+                application.Run(window);
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            
+            await Task.Run(thread.Join, cancellationToken).ConfigureAwait(false);
         }
-
-        #endregion
-
-        #region Event Handlers
-
-        //public void Global_MouseUp(object? sender, MouseEventExtArgs e)
-        //{
-        //    IsMouseDown = false;
-        //    if (!IsHookCombination())
-        //    {
-        //        return;
-        //    }
-
-        //    e.Handled = true;
-
-        //    View?.Close();
-        //    View = null;
-
-        //    var rectangle = CalculateRectangle(e);
-        //    if (rectangle.Width == 0 || rectangle.Height == 0)
-        //    {
-        //        return;
-        //    }
-
-        //    OnNewRectangle(rectangle);
-        //}
-
-        //public void Global_MouseMove(object? sender, MouseEventExtArgs e)
-        //{
-        //    //if (System.Diagnostics.Debugger.IsAttached)
-        //    if (!IsMouseDown || !IsHookCombination())
-        //    {
-        //        View?.Close();
-        //        View = null;
-        //        return;
-        //    }
-
-        //    var rectangle = CalculateRectangle(e);
-
-        //    View = View ?? throw new InvalidOperationException("View is null");
-        //    View.Border.Margin = new Thickness(
-        //        rectangle.Left - View.Left,
-        //        rectangle.Top - View.Top,
-        //        View.Width + View.Left - rectangle.Left - rectangle.Width,
-        //        View.Height + View.Top - rectangle.Top - rectangle.Height);
-
-        //}
-
-        //public void Global_MouseDown(object? sender, MouseEventExtArgs e)
-        //{
-        //    IsMouseDown = true;
-        //    if (!IsHookCombination())
-        //    {
-        //        return;
-        //    }
-
-        //    e.Handled = true;
-
-        //    View = new RectangleView();
-
-        //    StartPoint = new Point(e.X, e.Y);
-
-        //    View.Border.Margin = new Thickness(
-        //        e.X - View.Left,
-        //        e.Y - View.Top,
-        //        View.Width + View.Left - e.X,
-        //        View.Height + View.Top - e.Y);
-        //    View.Border.Visibility = Visibility.Visible;
-
-        //    View.Show();
-
-        //}
-
-        //#endregion
-
-        //#region Private Methods
 
         private static Rectangle CalculateRectangle(Point startPoint, Point endPoint)
         {
