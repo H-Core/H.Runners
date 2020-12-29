@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace H.Runners
 {
@@ -31,8 +32,40 @@ namespace H.Runners
         public static System.Drawing.Point GetCursorPosition()
         {
             GetCursorPos(out var point);
+            var dpi = GetDpi();
+            return new System.Drawing.Point((int)(point.X / dpi), (int)(point.Y / dpi));
+        }
 
-            return new System.Drawing.Point(point.X, point.Y);
+        [DllImport("user32.dll")]
+        private static extern int ReleaseDC(nint hWnd, nint hDC);
+
+        [DllImport("user32.dll")]
+        private static extern nint GetDC(nint hwnd);
+
+        [DllImport("gdi32.dll")]
+        private static extern int GetDeviceCaps(nint hdc, int nIndex);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static double GetDpi()
+        {
+            var desktopWnd = (nint)0;
+            var dc = GetDC(desktopWnd);
+            if (dc == 0)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            const int logpixelsx = 88;
+            var value = GetDeviceCaps(dc, logpixelsx) / 96.0;
+            if (ReleaseDC(desktopWnd, dc) == 0)
+            {
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
+
+            return value;
         }
     }
 }

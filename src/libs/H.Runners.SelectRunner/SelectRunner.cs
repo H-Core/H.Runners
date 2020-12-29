@@ -66,12 +66,9 @@ namespace H.Runners
 
                     var startPoint = MouseUtilities.GetCursorPosition();
 
-                    window.Border.Margin = new Thickness(
-                        startPoint.X - window.Left,
-                        startPoint.Y - window.Top,
-                        window.Width + window.Left - startPoint.X,
-                        window.Height + window.Top - startPoint.Y);
                     window.Border.Visibility = Visibility.Visible;
+
+                    ApplyRectangle(window, CalculateRectangle(startPoint, new Point(startPoint.X + 1, startPoint.Y + 1)));
 
                     window.Show();
 
@@ -79,13 +76,7 @@ namespace H.Runners
                     {
                         application.Dispatcher.Invoke(() =>
                         {
-                            var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
-
-                            window.Border.Margin = new Thickness(
-                                rectangle.Left - window.Left,
-                                rectangle.Top - window.Top,
-                                window.Width + window.Left - rectangle.Left - rectangle.Width,
-                                window.Height + window.Top - rectangle.Top - rectangle.Height);
+                            ApplyRectangle(window, CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition()));
                         });
                     };
 
@@ -93,10 +84,10 @@ namespace H.Runners
 
                     await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-                    var finalRectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
-                    if (finalRectangle.Width != 0 && finalRectangle.Height != 0)
+                    var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
+                    if (rectangle.Width != 0 && rectangle.Height != 0)
                     {
-                        OnNewRectangle(finalRectangle);
+                        OnNewRectangle(rectangle);
                     }
 
                     application.Dispatcher.Invoke(() =>
@@ -124,6 +115,15 @@ namespace H.Runners
             var height = dy > 0 ? dy : -dy;
 
             return new Rectangle(x, y, width, height);
+        }
+
+        private static void ApplyRectangle(RectangleWindow window, Rectangle rectangle)
+        {
+            window.Border.Margin = new Thickness(
+                rectangle.Left - window.Left,
+                rectangle.Top - window.Top,
+                window.Width + window.Left - rectangle.Left - rectangle.Width,
+                window.Height + window.Top - rectangle.Top - rectangle.Height);
         }
 
         #endregion
