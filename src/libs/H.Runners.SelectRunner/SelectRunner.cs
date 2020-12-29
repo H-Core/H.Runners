@@ -62,7 +62,7 @@ namespace H.Runners
                 var application = new Application();
                 application.Startup += async (_, _) =>
                 {
-                    using var timer = new Timer(20);
+                    using var timer = new Timer(15);
 
                     var startPoint = MouseUtilities.GetCursorPosition();
 
@@ -73,23 +73,13 @@ namespace H.Runners
                         window.Height + window.Top - startPoint.Y);
                     window.Border.Visibility = Visibility.Visible;
 
-                    var endPoint = new Point(1000, 1000);//MouseUtilities.GetCursorPosition();
-                    var rectangle = CalculateRectangle(startPoint, endPoint);
-
-                    window.Border.Margin = new Thickness(
-                        rectangle.Left - window.Left,
-                        rectangle.Top - window.Top,
-                        window.Width + window.Left - rectangle.Left - rectangle.Width,
-                        window.Height + window.Top - rectangle.Top - rectangle.Height);
-
                     window.Show();
 
                     timer.Elapsed += (_, _) =>
                     {
                         application.Dispatcher.Invoke(() =>
                         {
-                            endPoint = MouseUtilities.GetCursorPosition();
-                            rectangle = CalculateRectangle(startPoint, endPoint);
+                            var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
 
                             window.Border.Margin = new Thickness(
                                 rectangle.Left - window.Left,
@@ -103,11 +93,10 @@ namespace H.Runners
 
                     await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-                    endPoint = MouseUtilities.GetCursorPosition();
-                    rectangle = CalculateRectangle(startPoint, endPoint);
-                    if (rectangle.Width != 0 && rectangle.Height != 0)
+                    var finalRectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
+                    if (finalRectangle.Width != 0 && finalRectangle.Height != 0)
                     {
-                        OnNewRectangle(rectangle);
+                        OnNewRectangle(finalRectangle);
                     }
 
                     application.Dispatcher.Invoke(() =>
