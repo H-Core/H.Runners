@@ -3,10 +3,9 @@
   <Import Project="..\Directory.Build.props" />
 
   <PropertyGroup Label="Nuget">
-    <Version>0.18.4</Version>
+    <Version>0.19.2</Version>
     <PackageReleaseNotes>
-      To H.Core 0.18.4.
-      Added TelegramRunner StartReceiving/StopReceiving commands.
+      To H.Core 0.19.2.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

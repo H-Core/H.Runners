@@ -83,16 +83,16 @@ namespace H.Runners
 
             Add(AsyncAction.WithCommand("telegram message", (command, cancellationToken) =>
             {
-                var message = command.Value.Arguments.ElementAt(0);
-                var to = command.Value.Arguments.ElementAtOrDefault(1);
+                var message = command.Input.Arguments.ElementAt(0);
+                var to = command.Input.Arguments.ElementAtOrDefault(1);
                 
                 return SendMessageAsync(message, to, cancellationToken);
             }, "Arguments: text, to?"));
             Add(AsyncAction.WithCommand("telegram audio", (command, cancellationToken) =>
             {
-                var bytes = command.Value.Data;
-                var to = command.Value.Arguments.ElementAtOrDefault(0);
-                var preview = command.Value.Arguments.ElementAtOrDefault(1);
+                var bytes = command.Input.Data;
+                var to = command.Input.Arguments.ElementAtOrDefault(0);
+                var preview = command.Input.Arguments.ElementAtOrDefault(1);
 
                 return SendAudioAsync(bytes, to, preview, cancellationToken);
             }, "Data: mp3 bytes. Arguments: to?, preview?"));
