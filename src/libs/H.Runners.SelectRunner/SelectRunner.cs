@@ -13,8 +13,15 @@ namespace H.Runners
     /// <summary>
     /// 
     /// </summary>
-    public class SelectRunner : Runner
+    public sealed class SelectRunner : Runner
     {
+        #region Properties
+
+        private RectangleWindow? Window { get; set; }
+        private Application? Application { get; set; }
+
+        #endregion
+
         #region Events
 
         /// <summary>
@@ -51,57 +58,74 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task InitializeAsync(CancellationToken cancellationToken = default)
+        {
+            var thread = new Thread(() =>
+            {
+                Window = new RectangleWindow();
+                Application = new Application();
+                Application.Run(Window);
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+
+            while (Application == null || Window == null)
+            {
+                await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="process"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<Rectangle> SelectAsync(IProcess<ICommand> process, CancellationToken cancellationToken = default)
         {
-            var rectangle = new Rectangle(0, 0, 0, 0);
-            var thread = new Thread(() =>
+            process = process ?? throw new ArgumentNullException(nameof(process));
+
+            if (Window == null || Application == null)
             {
-                var window = new RectangleWindow();
-                var application = new Application();
-                application.Startup += async (_, _) =>
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            Window = Window ?? throw new InvalidOperationException("Window is null.");
+            Application = Application ?? throw new InvalidOperationException("Window is null.");
+
+            var startPoint = MouseUtilities.GetCursorPosition();
+
+            using var timer = new Timer(15);
+            timer.Elapsed += (_, _) =>
+            {
+                Application.Dispatcher.Invoke(() =>
                 {
-                    using var timer = new Timer(15);
+                    ApplyRectangle(Window, CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition()));
+                });
+            };
+            timer.Start();
 
-                    var startPoint = MouseUtilities.GetCursorPosition();
+            await Application.Dispatcher.InvokeAsync(() =>
+            {
+                Window.Border.Visibility = Visibility.Visible;
 
-                    window.Border.Visibility = Visibility.Visible;
-
-                    ApplyRectangle(window, CalculateRectangle(startPoint, new Point(startPoint.X + 1, startPoint.Y + 1)));
-
-                    window.Show();
-
-                    timer.Elapsed += (_, _) =>
-                    {
-                        application.Dispatcher.Invoke(() =>
-                        {
-                            ApplyRectangle(window, CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition()));
-                        });
-                    };
-
-                    timer.Start();
-
-                    await process.WaitAsync(cancellationToken).ConfigureAwait(false);
-
-                    rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
-                    if (rectangle.Width != 0 && rectangle.Height != 0)
-                    {
-                        OnNewRectangle(rectangle);
-                    }
-
-                    application.Dispatcher.Invoke(() =>
-                    {
-                        application.Shutdown();
-                    });
-                };
-                application.Run(window);
+                ApplyRectangle(Window, CalculateRectangle(startPoint, new Point(startPoint.X + 1, startPoint.Y + 1)));
             });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            
-            await Task.Run(thread.Join, cancellationToken).ConfigureAwait(false);
+
+            await process.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            await Application.Dispatcher.InvokeAsync(() =>
+            {
+                Window.Border.Visibility = Visibility.Hidden;
+            });
+
+            var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition());
+            if (rectangle.Width != 0 && rectangle.Height != 0)
+            {
+                OnNewRectangle(rectangle);
+            }
 
             return rectangle;
         }
@@ -127,6 +151,21 @@ namespace H.Runners
                 rectangle.Top - window.Top,
                 window.Width + window.Left - rectangle.Left - rectangle.Width,
                 window.Height + window.Top - rectangle.Top - rectangle.Height);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public override void Dispose()
+        {
+            Application?.Dispatcher.Invoke(() =>
+            {
+                Application.Shutdown();
+            });
+            Application = null;
+            Window = null;
+
+            base.Dispose();
         }
 
         #endregion
