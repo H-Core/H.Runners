@@ -10,6 +10,7 @@ namespace H.Runners.IntegrationTests
     public class SimpleTests
     {
         [TestMethod]
+        [Ignore]
         public async Task SelectTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
@@ -38,6 +39,7 @@ namespace H.Runners.IntegrationTests
         }
 
         [TestMethod]
+        [Ignore]
         public void GetCursorPositionTest()
         {
             var point = MouseUtilities.GetCursorPosition();
