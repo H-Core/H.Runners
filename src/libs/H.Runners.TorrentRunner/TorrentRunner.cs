@@ -11,7 +11,7 @@ using H.Core.Settings;
 using H.Runners.Extensions;
 using H.Runners.Utilities;
 using HtmlAgilityPack;
-using OctoTorrent.Common;
+using MonoTorrent;
 using Process = System.Diagnostics.Process;
 
 namespace H.Runners
@@ -195,29 +195,29 @@ namespace H.Runners
                 .ToArray();
         }
 
-        private string? FindBestTorrent(ICollection<string> files)
+        private string? FindBestTorrent(IEnumerable<string> files)
         {
             var torrents = files
-                .Select(i => Torrent.TryLoad(i, out var torrent) ? torrent : null)
-                .Where(i => i != null)
-                .ToArray();
+                .Select(path => Torrent.TryLoad(path, out var torrent) ? (path, torrent) : default)
+                .Where(tuple => tuple != default)
+                .ToDictionary(tuple => tuple.path, tuple => tuple.torrent);
 
             var goodTorrents = torrents
-                .Where(torrent => torrent?.Files.Length == 1 && torrent.Files.Any(IsGoodFile))
-                .OrderByDescending(torrent => torrent?.AnnounceUrls.Count)
+                .Where(torrent => torrent.Value.Files.Length == 1 && torrent.Value.Files.Any(IsGoodFile))
+                .OrderByDescending(torrent => torrent.Value.AnnounceUrls.Count)
                 .ToArray();
 
             if (!goodTorrents.Any())
             {
                 goodTorrents = torrents
-                    .Where(torrent => torrent?.Files?.Any(IsGoodFile) == true)
-                    .OrderByDescending(torrent => torrent?.AnnounceUrls.Count)
+                    .Where(torrent => torrent.Value.Files?.Any(IsGoodFile) == true)
+                    .OrderByDescending(torrent => torrent.Value.AnnounceUrls.Count)
                     .ToArray();
             }
 
             var bestTorrent = goodTorrents.FirstOrDefault();
 
-            return bestTorrent?.TorrentPath;
+            return bestTorrent.Key;
         }
 
         /// <summary>
