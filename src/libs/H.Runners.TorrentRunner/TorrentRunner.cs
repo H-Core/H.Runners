@@ -251,7 +251,6 @@ namespace H.Runners
                 return;
             }
 
-            this.Say("Нашла!");
             await QTorrentCommandAsync(path, cancellationToken).ConfigureAwait(false);
         }
 

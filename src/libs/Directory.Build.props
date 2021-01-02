@@ -8,10 +8,9 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Nuget">
-    <Version>0.19.6.2</Version>
+    <Version>0.20.7</Version>
     <PackageReleaseNotes>
-      To H.Core 0.19.6.
-      Changed TorrentRunner TargetFramework to .Net Standard 2.0.
+      To H.Core 0.20.7.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -15,7 +15,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.19.6" />
+    <PackageReference Include="H.Core" Version="0.20.7" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.29" />
     <PackageReference Include="MonoTorrent" Version="1.0.28" />
   </ItemGroup>
