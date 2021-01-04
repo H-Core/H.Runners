@@ -66,11 +66,12 @@ namespace H.Runners
 
             using var handler = new HttpClientHandler
             {
-                CookieContainer = cookieContainer
+                CookieContainer = cookieContainer, 
+                CheckCertificateRevocationList = true,
             };
             using var client = new HttpClient(handler, false)
             {
-                BaseAddress = uri
+                BaseAddress = uri,
             };
             using var request = new HttpRequestMessage
             {

@@ -47,7 +47,7 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public TelegramBotClient? Client { get; set; }
+        private TelegramBotClient? Client { get; set; }
 
         #endregion
 
