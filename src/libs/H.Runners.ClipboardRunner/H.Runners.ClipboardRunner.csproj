@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>net4.5;netcoreapp3.1;net5.0-windows</TargetFrameworks>
+    <RootNamespace>H.Runners</RootNamespace>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <Description>Allows you to control a clipboard.</Description>
+    <PackageTags>clipboard, wpf, h.runner, h.core, h.framework</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="H.Core" Version="0.20.8" />
+  </ItemGroup>
+
+</Project>
