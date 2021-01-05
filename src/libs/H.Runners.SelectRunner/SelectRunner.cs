@@ -18,7 +18,6 @@ namespace H.Runners
         #region Properties
 
         private RectangleWindow? Window { get; set; }
-        private Application? Application { get; set; }
 
         #endregion
 
@@ -65,13 +64,12 @@ namespace H.Runners
             var thread = new Thread(() =>
             {
                 Window = new RectangleWindow();
-                Application = new Application();
-                Application.Run(Window);
+                Window.ShowDialog();
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            while (Application == null || Window == null)
+            while (Window == null)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken).ConfigureAwait(false);
             }
@@ -87,27 +85,26 @@ namespace H.Runners
         {
             process = process ?? throw new ArgumentNullException(nameof(process));
 
-            if (Window == null || Application == null)
+            if (Window == null)
             {
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
 
             Window = Window ?? throw new InvalidOperationException("Window is null.");
-            Application = Application ?? throw new InvalidOperationException("Window is null.");
 
             var startPoint = MouseUtilities.GetCursorPosition();
 
             using var timer = new Timer(15);
             timer.Elapsed += (_, _) =>
             {
-                Application.Dispatcher.Invoke(() =>
+                Window.Dispatcher.Invoke(() =>
                 {
                     ApplyRectangle(Window, CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition()));
                 });
             };
             timer.Start();
 
-            await Application.Dispatcher.InvokeAsync(() =>
+            await Window.Dispatcher.InvokeAsync(() =>
             {
                 Window.Border.Visibility = Visibility.Visible;
 
@@ -116,7 +113,7 @@ namespace H.Runners
 
             await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            await Application.Dispatcher.InvokeAsync(() =>
+            await Window.Dispatcher.InvokeAsync(() =>
             {
                 Window.Border.Visibility = Visibility.Hidden;
             });
@@ -158,11 +155,10 @@ namespace H.Runners
         /// </summary>
         public override void Dispose()
         {
-            Application?.Dispatcher.Invoke(() =>
+            Window?.Dispatcher.Invoke(() =>
             {
-                Application.Shutdown();
+                Window.Close();
             });
-            Application = null;
             Window = null;
 
             base.Dispose();
