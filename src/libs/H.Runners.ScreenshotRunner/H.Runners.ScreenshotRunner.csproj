@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net4.5</TargetFrameworks>
+    <RootNamespace>H.Runners</RootNamespace>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <PropertyGroup Label="NuGet">
+    <Description>Allows you to screenshot a screen or a portion of the screen.</Description>
+    <PackageTags>screenshot, h.runner, h.core, h.framework</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="H.Core" Version="0.20.8" />
+    <PackageReference Include="H.Utilities.Screenshoter" Version="0.9.0" />
+  </ItemGroup>
+
+</Project>
