@@ -45,6 +45,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.ClipboardRunner",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.InteropRunner", "src\libs\H.Runners.InteropRunner\H.Runners.InteropRunner.csproj", "{6063F5A5-481A-4FB8-B47F-812628684E5B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.CommonRunners", "src\libs\H.Runners.CommonRunners\H.Runners.CommonRunners.csproj", "{4D260C37-E137-4107-8CE0-47D634442EAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{6063F5A5-481A-4FB8-B47F-812628684E5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6063F5A5-481A-4FB8-B47F-812628684E5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6063F5A5-481A-4FB8-B47F-812628684E5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D260C37-E137-4107-8CE0-47D634442EAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D260C37-E137-4107-8CE0-47D634442EAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D260C37-E137-4107-8CE0-47D634442EAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D260C37-E137-4107-8CE0-47D634442EAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{BD5FB7C4-FF62-4CD8-A523-7ADCCEA36663} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{C83B4872-6FB5-4344-B8E5-D1756D362D57} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{6063F5A5-481A-4FB8-B47F-812628684E5B} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+		{4D260C37-E137-4107-8CE0-47D634442EAB} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1493AEE4-9211-46E9-BFE6-8F629EAC5693}
