@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Description>Allows you to control a clipboard.</Description>
-    <PackageTags>clipboard, wpf, h.runner, h.core, h.framework</PackageTags>
+    <Description>Contains WPF runners:
+- ClipboardRunner,
+- KeyboardRunner
+    </Description>
+    <PackageTags>clipboard, keyboard, wpf, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
