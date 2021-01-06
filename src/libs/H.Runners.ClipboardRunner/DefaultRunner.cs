@@ -109,6 +109,20 @@ namespace H.Runners
             player.Play();
         }
 
+        private static string? NormalizePath(string path) =>
+            path.Replace("\\\\", "\\").Replace("//", "\\").Replace("/", "\\");
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="path"></param>
+        public void Explorer(string path)
+        {
+            path = path ?? throw new ArgumentNullException(nameof(path));
+
+            Run($"start explorer \"{NormalizePath(path)}\"");
+        }
+
         #endregion
     }
 }
