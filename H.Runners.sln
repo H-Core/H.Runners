@@ -41,7 +41,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.OcrRunner", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.ScreenshotRunner", "src\libs\H.Runners.ScreenshotRunner\H.Runners.ScreenshotRunner.csproj", "{BD5FB7C4-FF62-4CD8-A523-7ADCCEA36663}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.WpfRunners", "src\libs\H.Runners.ClipboardRunner\H.Runners.WpfRunners.csproj", "{C83B4872-6FB5-4344-B8E5-D1756D362D57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.ClipboardRunner", "src\libs\H.Runners.ClipboardRunner\H.Runners.ClipboardRunner.csproj", "{C83B4872-6FB5-4344-B8E5-D1756D362D57}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
