@@ -109,8 +109,15 @@ namespace H.Runners
             player.Play();
         }
 
-        private static string? NormalizePath(string path) =>
-            path.Replace("\\\\", "\\").Replace("//", "\\").Replace("/", "\\");
+        private static string NormalizePath(string path)
+        {
+            path = path ?? throw new ArgumentNullException(nameof(path));
+
+            return path
+                .Replace("\\\\", "\\", StringComparison.OrdinalIgnoreCase)
+                .Replace("//", "\\", StringComparison.OrdinalIgnoreCase)
+                .Replace("/", "\\", StringComparison.OrdinalIgnoreCase);
+        }
 
         /// <summary>
         /// 
