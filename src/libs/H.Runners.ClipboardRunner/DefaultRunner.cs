@@ -15,7 +15,7 @@ namespace H.Runners
     /// <summary>
     /// 
     /// </summary>
-    public class DefaultRunner : Runner
+    public sealed class DefaultRunner : Runner
     {
         #region Properties
 
