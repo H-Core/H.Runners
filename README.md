@@ -5,10 +5,19 @@
 [![Requirements](https://img.shields.io/badge/Requirements-.NET%20Standard%202.0-blue.svg)](https://github.com/dotnet/standard/blob/master/docs/versions/netstandard2.0.md)
 [![Build Status](https://github.com/HavenDV/H.Runners/workflows/.NET/badge.svg?branch=master)](https://github.com/HavenDV/H.Runners/actions?query=workflow%3A%22.NET%22)
 
-All of these runners are meant to be used in the final application.
+All of these runners are meant to be used in the core application.
 They can be called by any event, for example, by a global key combination or a voice command.
 
 ### Nuget
+
+Any runner can be used as a separate NuGet package (they are already released and available under the same name).  
+Example:
+```cs
+using H.Runners;
+
+var runner = new ScreenshotRunner();
+var image = await runner.ScreenshotAsync();
+```
 
 [![NuGet](https://img.shields.io/nuget/dt/H.Runners.ClipboardRunner.svg?style=flat-square&label=H.Runners.ClipboardRunner)](https://www.nuget.org/packages/H.Runners.ClipboardRunner/)  
 [![NuGet](https://img.shields.io/nuget/dt/H.Runners.CommonRunners.svg?style=flat-square&label=H.Runners.CommonRunners)](https://www.nuget.org/packages/H.Runners.CommonRunners/)  
