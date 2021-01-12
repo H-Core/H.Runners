@@ -16,7 +16,7 @@ namespace H.Runners
         /// </summary>
         public KeyboardRunner()
         {
-            Add(SyncAction.WithSingleArgument("keyboard", Run, "CONTROL+V"));
+            Add(SyncAction.WithSingleArgument("keyboard", Keyboard, "CONTROL+V"));
         }
 
         #endregion
@@ -28,11 +28,11 @@ namespace H.Runners
         /// See https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=net-5.0.
         /// </summary>
         /// <param name="command"></param>
-        public static void Run(string command)
+        public void Keyboard(string command)
         {
             command = command ?? throw new ArgumentNullException(command);
-
-            SendKeys.Send(command);
+            
+            SendKeys.SendWait(command);
         }
 
         #endregion

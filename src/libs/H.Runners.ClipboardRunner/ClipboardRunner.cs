@@ -37,18 +37,6 @@ namespace H.Runners
 
                 return new Value(text);
             }));
-            Add(new AsyncAction("copy", async (_, cancellationToken) =>
-            {
-                var text = await CopyAsync(cancellationToken).ConfigureAwait(false);
-
-                return new Value(text);
-            }));
-            Add(new AsyncAction("paste", async (command, cancellationToken) =>
-            {
-                await PasteAsync(command.Input.Argument, cancellationToken).ConfigureAwait(false);
-
-                return command.Input;
-            }));
         }
 
         #endregion
@@ -113,21 +101,6 @@ namespace H.Runners
             var text = Application.Dispatcher?.Invoke(Clipboard.GetText);
 
             return text ?? string.Empty;
-        }
-
-        private async Task<string> CopyAsync(CancellationToken cancellationToken = default)
-        {
-            await RunAsync(new Command("keyboard", "Control+C"), cancellationToken).ConfigureAwait(false);
-
-            return await GetClipboardTextAsync(cancellationToken).ConfigureAwait(false);
-        }
-
-        private async Task PasteAsync(string text, CancellationToken cancellationToken = default)
-        {
-            text = text ?? throw new ArgumentNullException(nameof(text));
-
-            await SetClipboardTextAsync(text, cancellationToken).ConfigureAwait(false);
-            await RunAsync(new Command("keyboard", "Control+V"), cancellationToken).ConfigureAwait(false);
         }
 
         #endregion

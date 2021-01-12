@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).100</Version>
+    <Version>$(Version).101</Version>
     <PackageReleaseNotes>
 Implemented KeyboardRunner.
 $(PackageReleaseNotes)
