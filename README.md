@@ -19,7 +19,9 @@ using var runner = new ScreenshotRunner();
 using var image = await runner.ScreenshotAsync();
 ```
 
-[![NuGet](https://img.shields.io/nuget/dt/H.Runners.ClipboardRunner.svg?style=flat-square&label=H.Runners.ClipboardRunner)](https://www.nuget.org/packages/H.Runners.ClipboardRunner/)  
+[![NuGet](https://img.shields.io/nuget/dt/H.Runners.ClipboardRunner.svg?style=flat-square&label=H.Runners.ClipboardRunner)](https://www.nuget.org/packages/H.Runners.ClipboardRunner/) 
+[![NuGet](https://img.shields.io/nuget/dt/H.Runners.KeyboardRunner.svg?style=flat-square&label=H.Runners.KeyboardRunner)](https://www.nuget.org/packages/H.Runners.KeyboardRunner/) 
+[![NuGet](https://img.shields.io/nuget/dt/H.Runners.NotifyRunner.svg?style=flat-square&label=H.Runners.NotifyRunner)](https://www.nuget.org/packages/H.Runners.NotifyRunner/)  
 [![NuGet](https://img.shields.io/nuget/dt/H.Runners.CommonRunners.svg?style=flat-square&label=H.Runners.CommonRunners)](https://www.nuget.org/packages/H.Runners.CommonRunners/)  
 [![NuGet](https://img.shields.io/nuget/dt/H.Runners.CSharpRunner.svg?style=flat-square&label=H.Runners.CSharpRunner)](https://www.nuget.org/packages/H.Runners.CSharpRunner/)  
 [![NuGet](https://img.shields.io/nuget/dt/H.Runners.DLinkRunner.svg?style=flat-square&label=H.Runners.DLinkRunner)](https://www.nuget.org/packages/H.Runners.DLinkRunner/)  

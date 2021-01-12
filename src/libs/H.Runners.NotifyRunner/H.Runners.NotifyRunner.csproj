@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net4.5</TargetFrameworks>
+    <TargetFrameworks>net4.5;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <RootNamespace>H.Runners</RootNamespace>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
@@ -9,13 +9,16 @@
   <PropertyGroup Label="NuGet">
     <Version>$(Version).100</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
-    <Description>Allows you to screenshot a screen or a portion of the screen.</Description>
-    <PackageTags>screenshot, h.runner, h.core, h.framework</PackageTags>
+    <Description>Plays sounds when called.</Description>
+    <PackageTags>notify, wpf, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\beep.wav" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="H.Core" Version="0.20.10" />
-    <PackageReference Include="H.Utilities.Screenshoter" Version="0.9.1" />
   </ItemGroup>
 
 </Project>

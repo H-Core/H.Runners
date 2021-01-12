@@ -49,6 +49,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.CommonRunners", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.ClipboardRunner.IntegrationTests", "src\tests\H.Runners.ClipboardRunner.IntegrationTests\H.Runners.ClipboardRunner.IntegrationTests.csproj", "{F8AD9EAB-7C66-461F-ACA1-181D9190405D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.KeyboardRunner", "src\libs\H.Runners.KeyboardRunner\H.Runners.KeyboardRunner.csproj", "{3CD7AA2E-C1AB-4033-8E61-1822CA0FB549}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.NotifyRunner", "src\libs\H.Runners.NotifyRunner\H.Runners.NotifyRunner.csproj", "{4EE31F7F-5076-4AE6-B429-86AA86E492BB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "H.Runners.KeyboardRunner.IntegrationTests", "src\tests\H.Runners.KeyboardRunner.IntegrationTests\H.Runners.KeyboardRunner.IntegrationTests.csproj", "{B7FDC49C-1378-4792-9951-AB6D5ABAF1E6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +117,18 @@ Global
 		{F8AD9EAB-7C66-461F-ACA1-181D9190405D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8AD9EAB-7C66-461F-ACA1-181D9190405D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8AD9EAB-7C66-461F-ACA1-181D9190405D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CD7AA2E-C1AB-4033-8E61-1822CA0FB549}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD7AA2E-C1AB-4033-8E61-1822CA0FB549}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD7AA2E-C1AB-4033-8E61-1822CA0FB549}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD7AA2E-C1AB-4033-8E61-1822CA0FB549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4EE31F7F-5076-4AE6-B429-86AA86E492BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4EE31F7F-5076-4AE6-B429-86AA86E492BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4EE31F7F-5076-4AE6-B429-86AA86E492BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4EE31F7F-5076-4AE6-B429-86AA86E492BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7FDC49C-1378-4792-9951-AB6D5ABAF1E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7FDC49C-1378-4792-9951-AB6D5ABAF1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7FDC49C-1378-4792-9951-AB6D5ABAF1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7FDC49C-1378-4792-9951-AB6D5ABAF1E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -130,6 +148,9 @@ Global
 		{6063F5A5-481A-4FB8-B47F-812628684E5B} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{4D260C37-E137-4107-8CE0-47D634442EAB} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
 		{F8AD9EAB-7C66-461F-ACA1-181D9190405D} = {9CAA231D-7BE1-46C9-ACD6-EB2E569CEBEA}
+		{3CD7AA2E-C1AB-4033-8E61-1822CA0FB549} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+		{4EE31F7F-5076-4AE6-B429-86AA86E492BB} = {6E5BF389-3D3F-4D74-9DD0-3B199CB529C5}
+		{B7FDC49C-1378-4792-9951-AB6D5ABAF1E6} = {9CAA231D-7BE1-46C9-ACD6-EB2E569CEBEA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1493AEE4-9211-46E9-BFE6-8F629EAC5693}

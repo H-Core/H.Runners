@@ -4,25 +4,14 @@
     <TargetFrameworks>net4.5;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <RootNamespace>H.Runners</RootNamespace>
     <UseWPF>true</UseWPF>
-    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).101</Version>
-    <PackageReleaseNotes>
-Implemented KeyboardRunner.
-$(PackageReleaseNotes)
-    </PackageReleaseNotes>
-    <Description>Contains WPF runners:
-- ClipboardRunner,
-- KeyboardRunner
-    </Description>
-    <PackageTags>clipboard, keyboard, wpf, h.runner, h.core, h.framework</PackageTags>
+    <Version>$(Version).102</Version>
+    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Description>Allows thread-safe clipboard access.</Description>
+    <PackageTags>clipboard, wpf, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\beep.wav" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="H.Core" Version="0.20.10" />

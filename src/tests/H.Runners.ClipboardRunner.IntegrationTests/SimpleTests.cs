@@ -9,14 +9,6 @@ namespace H.Runners.IntegrationTests
     public class SimpleTests
     {
         [TestMethod]
-        public void Keyboard123Test()
-        {
-            using var runner = new KeyboardRunner();
-            
-            runner.Keyboard("123");
-        }
-
-        [TestMethod]
         public async Task ClipboardSetGet123Test()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
