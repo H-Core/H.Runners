@@ -6,12 +6,14 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
+    <Version>$(Version).100</Version>
+    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
     <Description>Allows you to use some user32 WinAPI methods.</Description>
     <PackageTags>interop, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.11" />
+    <PackageReference Include="H.Core" Version="0.20.12" />
   </ItemGroup>
 
 </Project>

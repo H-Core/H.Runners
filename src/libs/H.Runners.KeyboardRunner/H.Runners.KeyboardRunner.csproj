@@ -9,12 +9,12 @@
   <PropertyGroup Label="NuGet">
     <Version>$(Version).100</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
-    <Description>Allows send keyboard events to system.</Description>
+    <Description>Allows you to send keyboard events to system.</Description>
     <PackageTags>keyboard, winforms, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.11" />
+    <PackageReference Include="H.Core" Version="0.20.12" />
   </ItemGroup>
 
 </Project>

@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Description></Description>
+    <Version>$(Version).100</Version>
+    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Description>Allows you to control DLink router.</Description>
+    <PackageTags>dlink, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net4.7.2' ">
@@ -14,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.11" />
+    <PackageReference Include="H.Core" Version="0.20.12" />
   </ItemGroup>
 
 </Project>

@@ -6,12 +6,15 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Description></Description>
+    <Version>$(Version).100</Version>
+    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Description>Allows you dynamic execution of C# code.</Description>
+    <PackageTags>csharp, dynamic, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="CS-Script" Version="3.30.5.1" />
-    <PackageReference Include="H.Core" Version="0.20.11" />
+    <PackageReference Include="H.Core" Version="0.20.12" />
   </ItemGroup>
 
 </Project>

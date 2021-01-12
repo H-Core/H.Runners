@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.11" />
+    <PackageReference Include="H.Core" Version="0.20.12" />
     <PackageReference Include="H.Utilities.Screenshoter" Version="0.9.1" />
   </ItemGroup>
 
