@@ -21,10 +21,9 @@
   </ItemGroup>
 
   <PropertyGroup Label="Nuget">
-    <Version>0.20.8.2</Version>
+    <Version>0.20.10</Version>
     <PackageReleaseNotes>
-      To H.Core 0.20.8.
-      Fixed some issues.
+To H.Core 0.20.10.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
