@@ -15,7 +15,7 @@ Example:
 ```cs
 using H.Runners;
 
-var runner = new ScreenshotRunner();
+using var runner = new ScreenshotRunner();
 var image = await runner.ScreenshotAsync();
 ```
 
