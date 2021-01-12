@@ -66,7 +66,7 @@ namespace H.Runners.IntegrationTests
         }
 
         [TestMethod]
-        public async Task StartReceivingTest()
+        public async Task ReceivingTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
@@ -77,11 +77,9 @@ namespace H.Runners.IntegrationTests
                 Console.WriteLine($"{nameof(runner.MessageReceived)}: {message}");
             };
 
-            runner.StartReceiving();
+            await runner.InitializeAsync(cancellationToken);
 
             await Task.Delay(TimeSpan.FromSeconds(15), cancellationToken);
-            
-            runner.StopReceiving();
         }
     }
 }
