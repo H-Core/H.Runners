@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.10" />
+    <PackageReference Include="H.Core" Version="0.20.11" />
     <PackageReference Include="IronOcr" Version="2020.12.2" />
   </ItemGroup>
 

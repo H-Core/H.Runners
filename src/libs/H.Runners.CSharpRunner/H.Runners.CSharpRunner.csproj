@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="CS-Script" Version="3.30.5.1" />
-    <PackageReference Include="H.Core" Version="0.20.10" />
+    <PackageReference Include="H.Core" Version="0.20.11" />
   </ItemGroup>
 
 </Project>

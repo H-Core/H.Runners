@@ -1,4 +1,6 @@
-﻿using H.Core.Runners;
+﻿using System.Globalization;
+using H.Core;
+using H.Core.Runners;
 
 namespace H.Runners
 {
@@ -20,27 +22,28 @@ namespace H.Runners
         /// </summary>
         public UserRunner()
         {
-            //AddAction("say-my-name", async _ =>
-            //{
-            //    if (string.IsNullOrWhiteSpace(UserName))
-            //    {
-            //        await SayAsync("Я еще не знаю вашего имени. Пожалуйста, представьтесь");
+            Add(AsyncAction.WithoutArguments("say-my-name", async cancellationToken =>
+            {
+                if (string.IsNullOrWhiteSpace(UserName))
+                {
+                    await this.SayAsync("Я еще не знаю вашего имени. Пожалуйста, представьтесь", cancellationToken)
+                        .ConfigureAwait(false);
 
-            //        var name = await WaitNextCommand(8000);
-            //        if (name == null || string.IsNullOrWhiteSpace(name))
-            //        {
-            //            return;
-            //        }
+                    var name = await this.GetNextCommandAsync(cancellationToken)
+                        .ConfigureAwait(false);
+                    if (name == null || string.IsNullOrWhiteSpace(name))
+                    {
+                        return;
+                    }
 
-            //        // First char to upper case
-            //        name = name[0].ToString().ToUpper() + name.Substring(1);
+                    // First char to upper case
+                    name = name[0].ToString().ToUpper(CultureInfo.InvariantCulture) + name.Substring(1);
 
-            //        Settings.Set("username", name);
-            //        SaveSettings();
-            //    }
+                    UserName = name;
+                }
 
-            //    Say($"Привет {UserName}");
-            //});
+                await this.SayAsync($"Привет, {UserName}", cancellationToken).ConfigureAwait(false);
+            }));
             AddSetting("username", o => UserName = o, NoEmpty, string.Empty);
 
             AddVariable("$username$", () => UserName ?? string.Empty);
