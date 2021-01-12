@@ -7,16 +7,16 @@ namespace H.Runners
     /// <summary>
     /// 
     /// </summary>
-    public sealed class NotifyRunner : Runner
+    public sealed class SoundRunner : Runner
     {
         #region Constructors
 
         /// <summary>
         /// 
         /// </summary>
-        public NotifyRunner()
+        public SoundRunner()
         {
-            Add(new SyncAction("notify", Notify));
+            Add(new SyncAction("sound", Sound));
         }
 
         #endregion
@@ -26,9 +26,9 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public void Notify()
+        public void Sound(string name)
         {
-            using var stream = ResourcesUtilities.ReadFileAsStream("beep.wav");
+            using var stream = ResourcesUtilities.ReadFileAsStream($"{name}.wav");
             using var player = new SoundPlayer(stream);
 
             player.Play();

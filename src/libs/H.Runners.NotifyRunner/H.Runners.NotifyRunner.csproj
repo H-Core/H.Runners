@@ -9,12 +9,15 @@
   <PropertyGroup Label="NuGet">
     <Version>$(Version).100</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
-    <Description>Plays sounds when called.</Description>
+    <Description>Plays sounds when called. Current sounds:
+event.wav
+start-recording.wav
+    </Description>
     <PackageTags>notify, wpf, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\beep.wav" />
+    <EmbeddedResource Include="Resources\*.*" />
   </ItemGroup>
 
   <ItemGroup>
