@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).100</Version>
+    <Version>$(Version).101</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
     <Description>Allows you to send/receive messages from Telegram.</Description>
     <PackageTags>telegram, h.runner, h.core, h.framework</PackageTags>

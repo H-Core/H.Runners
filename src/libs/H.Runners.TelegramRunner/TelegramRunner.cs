@@ -49,6 +49,11 @@ namespace H.Runners
         /// </summary>
         private TelegramBotClient? Client { get; set; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsInitialized { get; private set; }
+
         #endregion
 
         #region Events
@@ -77,9 +82,6 @@ namespace H.Runners
             AddSetting(nameof(DefaultUsername), o => DefaultUsername = o, Any, DefaultUsername);
             AddSetting(nameof(ProxyIp), o => ProxyIp = o, Any, ProxyIp);
             AddSetting(nameof(ProxyPort), o => ProxyPort = o, Any, ProxyPort);
-
-            Add(SyncAction.WithoutArguments("telegram start-receiving", StartReceiving));
-            Add(SyncAction.WithoutArguments("telegram stop-receiving", StopReceiving));
 
             Add(AsyncAction.WithCommand("telegram message", (command, cancellationToken) =>
             {
@@ -145,10 +147,32 @@ namespace H.Runners
                 ? new ChatId(DefaultUserId)
                 : new ChatId(DefaultUsername);
         }
-        
+
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public Task InitializeAsync(CancellationToken cancellationToken = default)
+        {
+            IsInitialized = true;
+
+            Client ??= GetClient();
+            Client.StartReceiving(cancellationToken: cancellationToken);
+            Client.OnMessage += (_, args) =>
+            {
+                var value = $"{args.Message.From.Username}: {args.Message.Text}";
+
+                OnMessageReceived(value);
+                this.Print(value);
+            };
+
+            return Task.FromResult(false);
+        }
 
         /// <summary>
         /// 
@@ -160,38 +184,17 @@ namespace H.Runners
         public async Task SendMessageAsync(string message, string? to = null, CancellationToken cancellationToken = default)
         {
             message = message ?? throw new ArgumentNullException(nameof(message));
-            
-            var client = GetClient();
+
+            if (!IsInitialized)
+            {
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            Client ??= GetClient();
             var chatId = GetChatId(to);
 
-            await client.SendTextMessageAsync(chatId, message, cancellationToken: cancellationToken)
+            await Client.SendTextMessageAsync(chatId, message, cancellationToken: cancellationToken)
                 .ConfigureAwait(false);
-        }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public void StartReceiving()
-        {
-            Client ??= GetClient();
-            Client.StartReceiving();
-            Client.OnMessage += (_, args) =>
-            {
-                var value = $"{args.Message.From.Username}: {args.Message.Text}";
-                
-                OnMessageReceived(value);
-                this.Print(value);
-            };
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public void StopReceiving()
-        {
-            Client?.StopReceiving();
         }
 
         /// <summary>
@@ -206,10 +209,15 @@ namespace H.Runners
         {
             stream = stream ?? throw new ArgumentNullException(nameof(stream));
 
-            var client = GetClient();
+            if (!IsInitialized)
+            {
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            Client ??= GetClient();
             var chatId = GetChatId(to);
 
-            await client.SendAudioAsync(
+            await Client.SendAudioAsync(
                     chatId, 
                     new InputOnlineFile(stream, preview ?? "Message"), 
                     cancellationToken: cancellationToken)
