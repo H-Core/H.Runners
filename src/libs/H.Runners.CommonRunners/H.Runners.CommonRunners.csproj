@@ -12,12 +12,14 @@
 - InternetRunner
 - UserRunner
 - ProcessRunner
+- AliasRunner
+- SequenceRunner
     </Description>
     <PackageTags>check-internet, start-process, explorer, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.11" />
+    <PackageReference Include="H.Core" Version="0.20.12" />
   </ItemGroup>
 
 </Project>
