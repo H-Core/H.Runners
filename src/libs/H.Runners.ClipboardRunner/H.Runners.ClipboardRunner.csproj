@@ -4,9 +4,15 @@
     <TargetFrameworks>net4.5;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <RootNamespace>H.Runners</RootNamespace>
     <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
+    <Version>$(Version).100</Version>
+    <PackageReleaseNotes>
+Implemented KeyboardRunner.
+$(PackageReleaseNotes)
+    </PackageReleaseNotes>
     <Description>Contains WPF runners:
 - ClipboardRunner,
 - KeyboardRunner

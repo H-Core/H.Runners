@@ -1,31 +1,40 @@
-﻿//using System.Windows.Forms;
-//using H.Core.Runners;
+﻿using System;
+using System.Windows.Forms;
+using H.Core.Runners;
 
-//namespace HomeCenter.NET.Runners
-//{
-//    public class KeyboardRunner : Runner
-//    {
-//        #region Constructors
+namespace H.Runners
+{
+    /// <summary>
+    /// 
+    /// </summary>
+    public sealed class KeyboardRunner : Runner
+    {
+        #region Constructors
 
-//        public KeyboardRunner()
-//        {
-//            //AddAction("keyboard", KeyboardCommand, "CONTROL+V");
-//        }
+        /// <summary>
+        /// 
+        /// </summary>
+        public KeyboardRunner()
+        {
+            Add(SyncAction.WithSingleArgument("keyboard", Run, "CONTROL+V"));
+        }
 
-//        #endregion
+        #endregion
 
-//        #region Private methods
+        #region Private methods
 
-//        private static void KeyboardCommand(string? command)
-//        {
-//            if (string.IsNullOrWhiteSpace(command))
-//            {
-//                return;
-//            }
+        /// <summary>
+        /// Current implementation uses <seealso cref="SendKeys.Send"/>. <br/>
+        /// See https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=net-5.0.
+        /// </summary>
+        /// <param name="command"></param>
+        public static void Run(string command)
+        {
+            command = command ?? throw new ArgumentNullException(command);
 
-//            SendKeys.Send(command);
-//        }
+            SendKeys.Send(command);
+        }
 
-//        #endregion
-//    }
-//}
+        #endregion
+    }
+}
