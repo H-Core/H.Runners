@@ -6,12 +6,14 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Description>
-      Contains common runners:
-      - InternetRunner,
-      - DefaultRunner
+    <Version>$(Version).100</Version>
+    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Description>Contains common runners:
+- InternetRunner
+- UserRunner
+- ProcessRunner
     </Description>
-    <PackageTags>common, h.runner, h.core, h.framework</PackageTags>
+    <PackageTags>check-internet, start-process, explorer, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>

@@ -17,8 +17,8 @@ namespace H.Runners
         /// </summary>
         public InternetRunner()
         {
-            Add(new SyncAction("check-internet", _ => new Value($"{IsAvailableNetworkActive()}")));
-            AddVariable("$internet$", () => IsAvailableNetworkActive());
+            Add(new SyncAction("check-internet", _ => new Value($"{CheckInternet()}")));
+            AddVariable("$internet$", () => CheckInternet());
         }
 
         #endregion
@@ -29,7 +29,7 @@ namespace H.Runners
         /// 
         /// </summary>
         /// <returns></returns>
-        public static bool IsAvailableNetworkActive()
+        public bool CheckInternet()
         {
             return NetworkInterface.GetIsNetworkAvailable() &&
                    NetworkInterface.GetAllNetworkInterfaces()
