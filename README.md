@@ -16,7 +16,7 @@ Example:
 using H.Runners;
 
 using var runner = new ScreenshotRunner();
-var image = await runner.ScreenshotAsync();
+using var image = await runner.ScreenshotAsync();
 ```
 
 [![NuGet](https://img.shields.io/nuget/dt/H.Runners.ClipboardRunner.svg?style=flat-square&label=H.Runners.ClipboardRunner)](https://www.nuget.org/packages/H.Runners.ClipboardRunner/)  
