@@ -15,20 +15,6 @@ namespace H.Runners
     /// </summary>
     public sealed class ScreenshotRunner : Runner
     {
-        #region Events
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public event EventHandler<Image>? Captured;
-
-        private void OnCaptured(Image value)
-        {
-            Captured?.Invoke(this, value);
-        }
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
@@ -48,7 +34,8 @@ namespace H.Runners
                         Convert.ToInt32(arguments[3], CultureInfo.InvariantCulture)
                         );
 
-                var image = await ScreenshotAsync(rectangle, cancellationToken).ConfigureAwait(false);
+                var image = await ShotAsync(rectangle, cancellationToken)
+                    .ConfigureAwait(false);
                 var tempPath = Path.GetTempFileName();
                 image.Save(tempPath);
 
@@ -61,20 +48,16 @@ namespace H.Runners
         #region Methods
 
         /// <summary>
-        /// 
+        /// Creates screenshot of all available screens. <br/>
+        /// If <paramref name="rectangle"/> is not null, returns image of this region.
         /// </summary>
         /// <param name="rectangle"></param>
-        /// <param name="_"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Image> ScreenshotAsync(Rectangle? rectangle = null, CancellationToken _ = default)
+        public async Task<Bitmap> ShotAsync(Rectangle? rectangle = null, CancellationToken cancellationToken = default)
         {
-            var image = rectangle == null
-                ? await Screenshoter.ShotVirtualDisplayAsync().ConfigureAwait(false)
-                : await Screenshoter.ShotVirtualDisplayRectangleAsync(rectangle.Value).ConfigureAwait(false);
-
-            OnCaptured(image);
-
-            return image;
+            return await Screenshoter.ShotAsync(rectangle, cancellationToken)
+                .ConfigureAwait(false);
         }
 
         #endregion
