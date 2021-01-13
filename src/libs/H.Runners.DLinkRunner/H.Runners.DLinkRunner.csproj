@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.12" />
+    <PackageReference Include="H.Core" Version="0.20.13" />
   </ItemGroup>
 
 </Project>

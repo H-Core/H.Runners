@@ -83,14 +83,14 @@ namespace H.Runners
             AddSetting(nameof(ProxyIp), o => ProxyIp = o, Any, ProxyIp);
             AddSetting(nameof(ProxyPort), o => ProxyPort = o, Any, ProxyPort);
 
-            Add(AsyncAction.WithCommand("telegram message", (command, cancellationToken) =>
+            Add(AsyncAction.WithCommand("telegram-message", (command, cancellationToken) =>
             {
                 var message = command.Input.Arguments.ElementAt(0);
                 var to = command.Input.Arguments.ElementAtOrDefault(1);
                 
                 return SendMessageAsync(message, to, cancellationToken);
             }, "Arguments: text, to?"));
-            Add(AsyncAction.WithCommand("telegram audio", (command, cancellationToken) =>
+            Add(AsyncAction.WithCommand("telegram-audio", (command, cancellationToken) =>
             {
                 var bytes = command.Input.Data;
                 var to = command.Input.Arguments.ElementAtOrDefault(0);
