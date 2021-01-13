@@ -17,10 +17,8 @@ namespace H.Runners
         {
             foreach (var alias in aliases)
             {
-                Add(SyncAction.WithCommand(alias, originalCommand =>
-                {
-                    Run(command.WithMergedInput(originalCommand.Input));
-                }));
+                Add(AsyncAction.WithCommand(alias, originalCommand => 
+                    RunAsync(command.WithMergedInput(originalCommand.Input))));
             }
         }
 
