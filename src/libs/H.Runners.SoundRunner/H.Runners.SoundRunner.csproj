@@ -21,7 +21,7 @@ start-recording.wav
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.21.2" />
+    <PackageReference Include="H.Core" Version="0.21.4" />
   </ItemGroup>
 
 </Project>
