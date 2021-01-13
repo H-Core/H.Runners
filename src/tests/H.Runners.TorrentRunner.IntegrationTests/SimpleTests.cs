@@ -37,7 +37,7 @@ namespace H.Runners.IntegrationTests
                 using var searcher = new GoogleSearcher();
                 var results = await searcher.SearchAsync(command.Input.Argument, token);
 
-                return new Value(results.Select(result => result.Url).ToArray());
+                return new IValue[]{ new Value(results.Select(result => result.Url).ToArray()) };
             };
             
             await runner.TorrentAsync("красотка", cancellationToken);
