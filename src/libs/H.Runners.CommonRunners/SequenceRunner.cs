@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -28,7 +27,9 @@ namespace H.Runners
                 var commands = command.Input.Arguments
                     .Skip(1)
                     .Take(count)
-                    .Select(Command.Parse);
+                    .Select(Command.Parse)
+                    .Cast<ICommand>()
+                    .ToArray();
                 var arguments = command.Input.Arguments
                     .Skip(1 + count)
                     .ToArray();
@@ -51,7 +52,7 @@ namespace H.Runners
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public async Task<IValue> SequenceAsync(
-            IEnumerable<ICommand> commands, 
+            ICommand[] commands, 
             string[]? arguments = null, 
             CancellationToken cancellationToken = default)
         {
