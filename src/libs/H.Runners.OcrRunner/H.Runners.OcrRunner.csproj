@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.20.13" />
+    <PackageReference Include="H.Core" Version="0.20.15" />
     <PackageReference Include="IronOcr" Version="2020.12.2" />
   </ItemGroup>
 

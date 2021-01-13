@@ -165,7 +165,7 @@ namespace H.Runners
             Client.StartReceiving(cancellationToken: cancellationToken);
             Client.OnMessage += (_, args) =>
             {
-                var value = $"{args.Message.From.Username}: {args.Message.Text}";
+                var value = $"{args.Message.From}: {args.Message.Text}";
 
                 OnMessageReceived(value);
                 this.Print(value);
