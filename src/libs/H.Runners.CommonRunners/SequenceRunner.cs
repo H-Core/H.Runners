@@ -38,6 +38,7 @@ namespace H.Runners
 
                 return Value.Empty;
             }));
+            Add(SyncAction.WithoutArguments("ignore", () => {}));
         }
 
         #endregion

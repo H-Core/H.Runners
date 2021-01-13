@@ -29,7 +29,7 @@ namespace H.Runners
             {
                 await SetClipboardTextAsync(command.Input.Argument, cancellationToken).ConfigureAwait(false);
 
-                return command.Input;
+                return Value.Empty;
             }));
             Add(new AsyncAction("clipboard-get", async (_, cancellationToken) =>
             {

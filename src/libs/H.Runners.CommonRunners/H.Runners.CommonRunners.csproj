@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).103</Version>
+    <Version>$(Version).104</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
     <Description>Contains common runners:
 - InternetRunner
