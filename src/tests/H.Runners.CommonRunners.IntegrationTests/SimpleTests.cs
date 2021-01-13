@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using H.Core;
 using H.Core.Runners;
 using H.Core.TestHelpers;
+using H.Core.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Runners.IntegrationTests
@@ -18,9 +19,15 @@ namespace H.Runners.IntegrationTests
             var cancellationToken = cancellationTokenSource.Token;
 
             using var runner = new SequenceRunner().WithLogging();
+            runner.AsyncCommandReceived += async (_, _, token) =>
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1), token).ConfigureAwait(false);
+
+                return EmptyArray<IValue>.Value;
+            };
 
             await runner.SequenceAsync(
-                new []
+                new ICommand[]
                 {
                     new Command("clipboard-set"),
                     new Command("keyboard ^v"),
