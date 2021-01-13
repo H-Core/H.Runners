@@ -17,7 +17,7 @@ namespace H.Runners
         /// <param name="command"></param>
         /// <param name="fireAndForget"></param>
         /// <param name="aliases"></param>
-        public AliasRunner(ICommand command, bool fireAndForget = false, params string[] aliases)
+        public AliasRunner(ICommand command, bool fireAndForget, params string[] aliases)
         {
             foreach (var alias in aliases)
             {
@@ -44,8 +44,28 @@ namespace H.Runners
         /// <param name="name"></param>
         /// <param name="fireAndForget"></param>
         /// <param name="aliases"></param>
-        public AliasRunner(string name, bool fireAndForget = false, params string[] aliases) : 
+        public AliasRunner(string name, bool fireAndForget, params string[] aliases) : 
             this(new Command(name), fireAndForget, aliases)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="aliases"></param>
+        public AliasRunner(ICommand command, params string[] aliases) :
+            this(command, false, aliases)
+        {
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="aliases"></param>
+        public AliasRunner(string name, params string[] aliases) :
+            this(name, false, aliases)
         {
         }
 
