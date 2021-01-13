@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
 using H.Core.Runners;
+using H.Core.Utilities;
 
 namespace H.Runners
 {
@@ -22,10 +24,16 @@ namespace H.Runners
         {
             Add(new AsyncAction("sequence", async (command, cancellationToken) =>
             {
+                var count = int.Parse(command.Input.Arguments.ElementAt(0), CultureInfo.InvariantCulture);
                 var commands = command.Input.Arguments
+                    .Skip(1)
+                    .Take(count)
                     .Select(Command.Parse);
+                var arguments = command.Input.Arguments
+                    .Skip(1 + count)
+                    .ToArray();
 
-                await SequenceAsync(commands, cancellationToken).ConfigureAwait(false);
+                await SequenceAsync(commands, arguments, cancellationToken).ConfigureAwait(false);
 
                 return Value.Empty;
             }));
@@ -39,13 +47,17 @@ namespace H.Runners
         /// 
         /// </summary>
         /// <param name="commands"></param>
+        /// <param name="arguments"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<IValue> SequenceAsync(IEnumerable<ICommand> commands, CancellationToken cancellationToken = default)
+        public async Task<IValue> SequenceAsync(
+            IEnumerable<ICommand> commands, 
+            string[]? arguments = null, 
+            CancellationToken cancellationToken = default)
         {
             commands = commands ?? throw new ArgumentNullException(nameof(commands));
 
-            var value = (IValue)Value.Empty;
+            var value = (IValue)new Value(arguments ?? EmptyArray<string>.Value);
             foreach (var command in commands)
             {
                 var values = await RunAsync(command.WithMergedInput(value), cancellationToken)
