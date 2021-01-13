@@ -57,7 +57,7 @@ namespace H.Runners.IntegrationTests
 
             using var runner = new AliasRunner(
                 new Command("sequence", "2", "clipboard-set", "keyboard ^v"),
-                "paste").WithLogging();
+                false, "paste").WithLogging();
 
             await runner.CallAsync(new Command("paste", "123"), cancellationToken);
         }
