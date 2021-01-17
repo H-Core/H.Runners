@@ -12,6 +12,8 @@ namespace H.Runners.IntegrationTests
         [TestMethod]
         public async Task ScreenshotTest()
         {
+            SimpleTests.CheckDesktop();
+
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 

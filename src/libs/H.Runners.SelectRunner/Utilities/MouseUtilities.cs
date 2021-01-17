@@ -23,6 +23,20 @@ namespace H.Runners.Utilities
         /// <summary>
         /// 
         /// </summary>
+        /// <returns></returns>
+        public static bool IsDesktop()
+        {
+            using var test = User32.OpenInputDesktop(
+                User32.DesktopCreationFlags.None, 
+                false, 
+                new Kernel32.ACCESS_MASK());
+
+            return !test.IsInvalid;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="handle"></param>
         /// <returns></returns>
         public static Point GetPhysicalCursorPosition(IntPtr handle)

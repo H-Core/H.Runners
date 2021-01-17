@@ -10,12 +10,21 @@ namespace H.Runners.IntegrationTests
     [TestClass]
     public class SimpleTests
     {
+        public static void CheckDesktop()
+        {
+            if (!MouseUtilities.IsDesktop())
+            {
+                Assert.Inconclusive("Mouse tests work only on desktop.");
+            }
+        }
+
         [TestMethod]
-        [Ignore]
         public async Task SelectTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
+
+            CheckDesktop();
 
             using var runner = new SelectRunner();
 
@@ -40,9 +49,10 @@ namespace H.Runners.IntegrationTests
         }
 
         [TestMethod]
-        [Ignore]
         public void GetVirtualCursorPositionTest()
         {
+            CheckDesktop();
+
             var point = MouseUtilities.GetVirtualCursorPosition();
 
             Console.WriteLine($"{point.X}, {point.Y}");
