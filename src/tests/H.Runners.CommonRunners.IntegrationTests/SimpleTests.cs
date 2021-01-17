@@ -61,5 +61,18 @@ namespace H.Runners.IntegrationTests
 
             await runner.CallAsync(new Command("paste", "123"), cancellationToken);
         }
+
+        [TestMethod]
+        public async Task RussianNameTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            using var runner = new AliasRunner(
+                new Command("sequence", "2", "clipboard-set", "keyboard ^v"),
+                "вставь").WithLogging();
+
+            await runner.CallAsync(Command.Parse("вставь 123"), cancellationToken);
+        }
     }
 }
