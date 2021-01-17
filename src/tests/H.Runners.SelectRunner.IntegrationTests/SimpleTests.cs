@@ -41,9 +41,9 @@ namespace H.Runners.IntegrationTests
 
         [TestMethod]
         [Ignore]
-        public void GetCursorPositionTest()
+        public void GetVirtualCursorPositionTest()
         {
-            var point = MouseUtilities.GetCursorPosition();
+            var point = MouseUtilities.GetVirtualCursorPosition();
 
             Console.WriteLine($"{point.X}, {point.Y}");
         }

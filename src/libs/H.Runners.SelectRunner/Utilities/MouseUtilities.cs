@@ -13,7 +13,7 @@ namespace H.Runners.Utilities
         /// 
         /// </summary>
         /// <returns></returns>
-        public static Point GetCursorPosition()
+        public static Point GetVirtualCursorPosition()
         {
             User32.GetCursorPos(out var point).Check();
 
@@ -23,43 +23,62 @@ namespace H.Runners.Utilities
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="dpi"></param>
         /// <param name="handle"></param>
         /// <returns></returns>
-        public static Point GetCursorPosition(double dpi, IntPtr handle)
+        public static Point GetPhysicalCursorPosition(IntPtr handle)
         {
             User32.GetCursorPos(out var point).Check();
 
-            User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point);
+            User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point).Check();
 
-            return new Point((int)(dpi * point.x), (int)(dpi * point.y));
+            return new Point(point.x, point.y);
         }
 
         /// <summary>
-        /// 
+        /// Converts physical point to app point.
         /// </summary>
-        /// <param name="dpi"></param>
-        /// <param name="handle"></param>
-        /// <param name="rectangle"></param>
+        /// <param name="point"></param>
+        /// <param name="scaleFactor"></param>
         /// <returns></returns>
-        public static Rectangle ToPhysical(this Rectangle rectangle, double dpi, IntPtr handle)
+        public static Point ToApp(this Point point, double scaleFactor)
         {
-            var point1 = new POINT
-            {
-                x = (int)(rectangle.Left / dpi), 
-                y = (int)(rectangle.Top / dpi)
-            };
-            var point2 = new POINT
-            {
-                x = (int)(rectangle.Right / dpi), 
-                y = (int)(rectangle.Bottom / dpi)
-            };
-            User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point1);
-            User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point2);
+            return new (
+                (int)Math.Round(scaleFactor * point.X), 
+                (int)Math.Round(scaleFactor * point.Y));
+        }
 
-            return new Rectangle(point1, new Size(
-                point2.x - point1.x, 
-                point2.y - point1.y));
+        /// <summary>
+        /// Converts app point to physical point.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <param name="scaleFactor"></param>
+        /// <returns></returns>
+        public static Point ToPhysical(this Point point, double scaleFactor)
+        {
+            return new(
+                (int)Math.Round(point.X / scaleFactor), 
+                (int)Math.Round(point.Y / scaleFactor)
+                );
+        }
+
+        /// <summary>
+        /// Converts app rectangle to physical rectangle.
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <param name="scaleFactor"></param>
+        /// <returns></returns>
+        public static Rectangle ToPhysical(this Rectangle rectangle, double scaleFactor)
+        {
+            var point1 = new Point(rectangle.Left, rectangle.Top)
+                .ToPhysical(scaleFactor);
+            var point2 = new Point(rectangle.Right, rectangle.Bottom)
+                .ToPhysical(scaleFactor);
+
+            return Rectangle.FromLTRB(
+                point1.X, 
+                point1.Y,
+                point2.X, 
+                point2.Y);
         }
     }
 }

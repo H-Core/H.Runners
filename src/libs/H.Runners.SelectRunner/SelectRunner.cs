@@ -24,20 +24,6 @@ namespace H.Runners
 
         #endregion
 
-        #region Events
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public event EventHandler<Rectangle>? NewRectangle;
-
-        private void OnNewRectangle(Rectangle rectangle)
-        {
-            NewRectangle?.Invoke(this, rectangle);
-        }
-
-        #endregion
-
         #region Constructors
 
         /// <summary>
@@ -95,16 +81,26 @@ namespace H.Runners
 
             Window = Window ?? throw new InvalidOperationException("Window is null.");
 
-            var dpi = await Window.Dispatcher.InvokeAsync(() => Window.GetDpi());
-            var handle = await Window.Dispatcher.InvokeAsync(() => new WindowInteropHelper(Window).Handle);
-            var startPoint = MouseUtilities.GetCursorPosition(dpi, handle);
+            var scaleFactor = await Window.Dispatcher.InvokeAsync(
+                () => Window.GetDpi());
+            var handle = await Window.Dispatcher.InvokeAsync(
+                () => new WindowInteropHelper(Window).Handle);
+            var startPoint = MouseUtilities
+                .GetPhysicalCursorPosition(handle)
+                .ToApp(scaleFactor);
             
             using var timer = new Timer(15);
             timer.Elapsed += (_, _) =>
             {
                 Window.Dispatcher.Invoke(() =>
                 {
-                    ApplyRectangle(Window, CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition(dpi, handle)));
+                    ApplyRectangle(
+                        Window, 
+                        CalculateRectangle(
+                            startPoint, 
+                            MouseUtilities
+                                .GetPhysicalCursorPosition(handle)
+                                .ToApp(scaleFactor)));
                 });
             };
             timer.Start();
@@ -113,7 +109,11 @@ namespace H.Runners
             {
                 Window.Border.Visibility = Visibility.Visible;
 
-                ApplyRectangle(Window, CalculateRectangle(startPoint, new Point(startPoint.X + 1, startPoint.Y + 1)));
+                ApplyRectangle(
+                    Window, 
+                    CalculateRectangle(
+                        startPoint, 
+                        new Point(startPoint.X + 1, startPoint.Y + 1)));
             });
 
             await process.WaitAsync(cancellationToken).ConfigureAwait(false);
@@ -123,14 +123,11 @@ namespace H.Runners
                 Window.Border.Visibility = Visibility.Hidden;
             });
 
-            var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition(dpi, handle))
-                .ToPhysical(dpi, handle);
-            if (rectangle.Width != 0 && rectangle.Height != 0)
-            {
-                OnNewRectangle(rectangle);
-            }
-
-            return rectangle;
+            return CalculateRectangle(
+                    startPoint, 
+                    MouseUtilities.GetPhysicalCursorPosition(handle).ToApp(scaleFactor))
+                .Normalize()
+                .ToPhysical(scaleFactor);
         }
 
         private static Rectangle CalculateRectangle(Point startPoint, Point endPoint)
