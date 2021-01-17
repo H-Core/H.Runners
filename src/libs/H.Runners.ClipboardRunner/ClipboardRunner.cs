@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using H.Core;
 using H.Core.Runners;
+using H.Runners.Extensions;
 
 namespace H.Runners
 {
@@ -25,13 +27,13 @@ namespace H.Runners
         /// </summary>
         public ClipboardRunner()
         {
-            Add(new AsyncAction("clipboard-set", async (command, cancellationToken) =>
+            Add(new AsyncAction("clipboard-set-text", async (command, cancellationToken) =>
             {
                 await SetClipboardTextAsync(command.Input.Argument, cancellationToken).ConfigureAwait(false);
 
                 return Value.Empty;
             }));
-            Add(new AsyncAction("clipboard-get", async (_, cancellationToken) =>
+            Add(new AsyncAction("clipboard-get-text", async (_, cancellationToken) =>
             {
                 var text = await GetClipboardTextAsync(cancellationToken).ConfigureAwait(false);
 
@@ -70,6 +72,17 @@ namespace H.Runners
             }
         }
 
+        private async Task<Application> GetApplicationAsync(
+            CancellationToken cancellationToken = default)
+        {
+            if (Application == null)
+            {
+                await InitializeAsync(cancellationToken).ConfigureAwait(false);
+            }
+
+            return Application ?? throw new InvalidOperationException("Application is null.");
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -77,13 +90,10 @@ namespace H.Runners
         /// <param name="cancellationToken"></param>
         public async Task SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
         {
-            if (Application == null)
-            {
-                await InitializeAsync(cancellationToken).ConfigureAwait(false);
-            }
-            Application = Application ?? throw new InvalidOperationException("Application is null.");
+            var application = await GetApplicationAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-            Application.Dispatcher?.Invoke(() => Clipboard.SetText(text));
+            await application.Dispatcher.InvokeAsync(() => Clipboard.SetText(text));
         }
 
         /// <summary>
@@ -92,15 +102,27 @@ namespace H.Runners
         /// <param name="cancellationToken"></param>
         public async Task<string> GetClipboardTextAsync(CancellationToken cancellationToken = default)
         {
-            if (Application == null)
-            {
-                await InitializeAsync(cancellationToken).ConfigureAwait(false);
-            }
-            Application = Application ?? throw new InvalidOperationException("Application is null.");
+            var application = await GetApplicationAsync(cancellationToken)
+                .ConfigureAwait(false);
 
-            var text = Application.Dispatcher?.Invoke(Clipboard.GetText);
+            var text = await application.Dispatcher.InvokeAsync(Clipboard.GetText);
 
             return text ?? string.Empty;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="cancellationToken"></param>
+        public async Task SetClipboardImageAsync(Image image, CancellationToken cancellationToken = default)
+        {
+            image = image ?? throw new ArgumentNullException(nameof(image));
+
+            var application = await GetApplicationAsync(cancellationToken)
+                .ConfigureAwait(false);
+
+            await application.Dispatcher.InvokeAsync(() => Clipboard.SetImage(image.ToBitmapImage()));
         }
 
         #endregion
