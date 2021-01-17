@@ -26,10 +26,10 @@ jobs:
       run: dotnet clean --configuration Release && dotnet nuget locals all --clear
     
     - name: Build
-      run: dotnet build --configuration Release
+      run: dotnet build --configuration Release --nologo
     
     - name: Run tests
-      run: dotnet test --configuration Release
+      run: dotnet test --configuration Release --nologo
         
     - name: Publish
       run: dotnet nuget push
@@ -37,3 +37,4 @@ jobs:
         --api-key ${{ secrets.NUGET_KEY }}
         --source https://api.nuget.org/v3/index.json
         --skip-duplicate
+        --nologo
