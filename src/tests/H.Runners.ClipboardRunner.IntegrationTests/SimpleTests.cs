@@ -33,8 +33,8 @@ namespace H.Runners.IntegrationTests
 
             using var runner = new ClipboardRunner().WithLogging();
 
-            await runner.CallAsync(new Command("clipboard-set", "123"), cancellationToken);
-            var output = await runner.CallAsync(new Command("clipboard-get"), cancellationToken);
+            await runner.CallAsync(new Command("clipboard-set-text", "123"), cancellationToken);
+            var output = await runner.CallAsync(new Command("clipboard-get-text"), cancellationToken);
 
             Console.WriteLine($"Output: {output}");
 
