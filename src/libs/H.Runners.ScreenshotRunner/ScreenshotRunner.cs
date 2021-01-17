@@ -54,7 +54,9 @@ namespace H.Runners
         /// <param name="rectangle"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Bitmap> ShotAsync(Rectangle? rectangle = null, CancellationToken cancellationToken = default)
+        public async Task<Image> ShotAsync(
+            Rectangle? rectangle = null, 
+            CancellationToken cancellationToken = default)
         {
             return await Screenshoter.ShotAsync(rectangle, cancellationToken)
                 .ConfigureAwait(false);
