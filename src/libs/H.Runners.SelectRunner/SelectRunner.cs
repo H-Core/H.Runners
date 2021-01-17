@@ -123,7 +123,8 @@ namespace H.Runners
                 Window.Border.Visibility = Visibility.Hidden;
             });
 
-            var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition(dpi, handle));
+            var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition(dpi, handle))
+                .ToPhysical(dpi, handle);
             if (rectangle.Width != 0 && rectangle.Height != 0)
             {
                 OnNewRectangle(rectangle);

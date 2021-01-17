@@ -34,5 +34,32 @@ namespace H.Runners.Utilities
 
             return new Point((int)(dpi * point.x), (int)(dpi * point.y));
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dpi"></param>
+        /// <param name="handle"></param>
+        /// <param name="rectangle"></param>
+        /// <returns></returns>
+        public static Rectangle ToPhysical(this Rectangle rectangle, double dpi, IntPtr handle)
+        {
+            var point1 = new POINT
+            {
+                x = (int)(rectangle.Left / dpi), 
+                y = (int)(rectangle.Top / dpi)
+            };
+            var point2 = new POINT
+            {
+                x = (int)(rectangle.Right / dpi), 
+                y = (int)(rectangle.Bottom / dpi)
+            };
+            User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point1);
+            User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point2);
+
+            return new Rectangle(point1, new Size(
+                point2.x - point1.x, 
+                point2.y - point1.y));
+        }
     }
 }
