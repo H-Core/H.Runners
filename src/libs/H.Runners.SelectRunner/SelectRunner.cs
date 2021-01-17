@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using H.Core;
 using H.Core.Runners;
 using H.Runners.Extensions;
@@ -95,14 +96,15 @@ namespace H.Runners
             Window = Window ?? throw new InvalidOperationException("Window is null.");
 
             var dpi = await Window.Dispatcher.InvokeAsync(() => Window.GetDpi());
-            var startPoint = GetCursorPosition(dpi);
+            var handle = await Window.Dispatcher.InvokeAsync(() => new WindowInteropHelper(Window).Handle);
+            var startPoint = MouseUtilities.GetCursorPosition(dpi, handle);
             
             using var timer = new Timer(15);
             timer.Elapsed += (_, _) =>
             {
                 Window.Dispatcher.Invoke(() =>
                 {
-                    ApplyRectangle(Window, CalculateRectangle(startPoint, GetCursorPosition(dpi)));
+                    ApplyRectangle(Window, CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition(dpi, handle)));
                 });
             };
             timer.Start();
@@ -121,20 +123,13 @@ namespace H.Runners
                 Window.Border.Visibility = Visibility.Hidden;
             });
 
-            var rectangle = CalculateRectangle(startPoint, GetCursorPosition(dpi));
+            var rectangle = CalculateRectangle(startPoint, MouseUtilities.GetCursorPosition(dpi, handle));
             if (rectangle.Width != 0 && rectangle.Height != 0)
             {
                 OnNewRectangle(rectangle);
             }
 
             return rectangle;
-        }
-
-        private static Point GetCursorPosition(double dpi)
-        {
-            var point = MouseUtilities.GetCursorPosition();
-
-            return new Point((int)(dpi * point.X), (int)(dpi * point.Y));
         }
 
         private static Rectangle CalculateRectangle(Point startPoint, Point endPoint)
