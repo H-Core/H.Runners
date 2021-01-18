@@ -33,15 +33,20 @@ namespace H.Runners
         {
             Add(new ProcessAction("select", async (process, _, cancellationToken) =>
             {
-                var rectangle = await SelectAsync(process, cancellationToken).ConfigureAwait(false);
+                var rectangle = await SelectAsync(process, cancellationToken)
+                    .ConfigureAwait(false);
 
-                return new Value($"{rectangle.Left}", $"{rectangle.Top}", $"{rectangle.Right}", $"{rectangle.Bottom}");
+                return new Value(
+                    $"{rectangle.Left}", 
+                    $"{rectangle.Top}", 
+                    $"{rectangle.Right}", 
+                    $"{rectangle.Bottom}");
             }));
         }
 
         #endregion
 
-        #region Methods
+        #region Public methods
 
         /// <summary>
         /// 
@@ -88,69 +93,49 @@ namespace H.Runners
             var startPoint = MouseUtilities
                 .GetPhysicalCursorPosition(handle)
                 .ToApp(scaleFactor);
-            
-            using var timer = new Timer(15);
+            var endPoint = startPoint;
+
+            using var timer = new Timer(1);
             timer.Elapsed += (_, _) =>
             {
                 Window.Dispatcher.Invoke(() =>
                 {
+                    endPoint = MouseUtilities.GetPhysicalCursorPosition(handle).ToApp(scaleFactor);
+
                     ApplyRectangle(
                         Window, 
-                        CalculateRectangle(
-                            startPoint, 
-                            MouseUtilities
-                                .GetPhysicalCursorPosition(handle)
-                                .ToApp(scaleFactor)));
+                        startPoint,
+                        endPoint);
                 });
             };
             timer.Start();
-
+            
             await Window.Dispatcher.InvokeAsync(() =>
             {
                 Window.Border.Visibility = Visibility.Visible;
 
-                ApplyRectangle(
-                    Window, 
-                    CalculateRectangle(
-                        startPoint, 
-                        new Point(startPoint.X + 1, startPoint.Y + 1)));
+                //ApplyRectangle(
+                //    Window,
+                //    startPoint,
+                //    new Point(startPoint.X + 1, startPoint.Y + 1));
             });
-
+            
             await process.WaitAsync(cancellationToken).ConfigureAwait(false);
+
+            //var endPoint = MouseUtilities.GetPhysicalCursorPosition(handle)
+            //    .ToApp(scaleFactor);
+
+            timer.Stop();
 
             await Window.Dispatcher.InvokeAsync(() =>
             {
                 Window.Border.Visibility = Visibility.Hidden;
             });
 
-            return CalculateRectangle(
-                    startPoint, 
-                    MouseUtilities.GetPhysicalCursorPosition(handle).ToApp(scaleFactor))
+            return startPoint
+                .ToRectangle(endPoint)
                 .Normalize()
                 .ToPhysical(scaleFactor);
-        }
-
-        private static Rectangle CalculateRectangle(Point startPoint, Point endPoint)
-        {
-            var dx = endPoint.X - startPoint.X;
-            var dy = endPoint.Y - startPoint.Y;
-
-            var x = startPoint.X + Math.Min(0, dx);
-            var y = startPoint.Y + Math.Min(0, dy);
-
-            var width = dx > 0 ? dx : -dx;
-            var height = dy > 0 ? dy : -dy;
-
-            return new Rectangle(x, y, width, height);
-        }
-
-        private static void ApplyRectangle(RectangleWindow window, Rectangle rectangle)
-        {
-            window.Border.Margin = new Thickness(
-                rectangle.Left - window.Left,
-                rectangle.Top - window.Top,
-                window.Width + window.Left - rectangle.Left - rectangle.Width,
-                window.Height + window.Top - rectangle.Top - rectangle.Height);
         }
 
         /// <summary>
@@ -165,6 +150,21 @@ namespace H.Runners
             Window = null;
 
             base.Dispose();
+        }
+
+        #endregion
+
+        #region Private methods
+
+        private static void ApplyRectangle(RectangleWindow window, Point startPoint, Point endPoint)
+        {
+            var rectangle = startPoint.ToRectangle(endPoint);
+
+            window.Border.Margin = new Thickness(
+                rectangle.Left - window.Left,
+                rectangle.Top - window.Top,
+                window.Width + window.Left - rectangle.Left - rectangle.Width,
+                window.Height + window.Top - rectangle.Top - rectangle.Height);
         }
 
         #endregion
