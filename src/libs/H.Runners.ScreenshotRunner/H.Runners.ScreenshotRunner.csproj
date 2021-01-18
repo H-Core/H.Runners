@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).106</Version>
-    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Version>$(Version).107</Version>
+    <PackageReleaseNotes>
+Changed screenshot output to BMP byte array.
+$(PackageReleaseNotes)
+    </PackageReleaseNotes>
     <Description>Allows you to screenshot a screen or a portion of the screen.</Description>
     <PackageTags>screenshot, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Threading;
@@ -36,10 +37,10 @@ namespace H.Runners
 
                 var image = await ShotAsync(rectangle, cancellationToken)
                     .ConfigureAwait(false);
-                var tempPath = Path.GetTempFileName();
-                image.Save(tempPath);
+                using var stream = new MemoryStream();
+                image.Save(stream, ImageFormat.Bmp);
 
-                return new Value(tempPath);
+                return new Value(stream.ToArray());
             }));
         }
 
@@ -54,7 +55,7 @@ namespace H.Runners
         /// <param name="rectangle"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<Image> ShotAsync(
+        public async Task<Bitmap> ShotAsync(
             Rectangle? rectangle = null, 
             CancellationToken cancellationToken = default)
         {
