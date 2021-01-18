@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\libs\H.Runners.ClipboardRunner\H.Runners.ClipboardRunner.csproj" />
-    <ProjectReference Include="..\..\libs\H.Runners.CommonRunners\H.Runners.CommonRunners.csproj" />
     <ProjectReference Include="..\..\libs\H.Runners.ScreenshotRunner\H.Runners.ScreenshotRunner.csproj" />
     <ProjectReference Include="..\..\libs\H.Runners.SelectRunner\H.Runners.SelectRunner.csproj" />
   </ItemGroup>
