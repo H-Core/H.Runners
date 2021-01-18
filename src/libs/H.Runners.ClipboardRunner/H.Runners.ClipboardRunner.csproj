@@ -7,14 +7,14 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).102</Version>
+    <Version>$(Version).103</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
     <Description>Allows you thread-safe clipboard access.</Description>
     <PackageTags>clipboard, wpf, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.22.0" />
+    <PackageReference Include="H.Core" Version="0.22.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">

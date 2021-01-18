@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.22.0" />
+    <PackageReference Include="H.Core" Version="0.22.1" />
     <PackageReference Include="H.Hooks" Version="1.2.1" />
   </ItemGroup>
 
