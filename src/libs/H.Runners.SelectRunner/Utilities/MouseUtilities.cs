@@ -10,6 +10,20 @@ namespace H.Runners.Utilities
     public static class MouseUtilities
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsDesktop()
+        {
+            using var handle = User32.OpenInputDesktop(
+                User32.DesktopCreationFlags.None,
+                false,
+                new Kernel32.ACCESS_MASK());
+
+            return !handle.IsInvalid;
+        }
+
+        /// <summary>
         /// Returns cursor position, considering screen scales.
         /// </summary>
         /// <returns></returns>
@@ -21,20 +35,6 @@ namespace H.Runners.Utilities
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public static bool IsDesktop()
-        {
-            using var handle = User32.OpenInputDesktop(
-                User32.DesktopCreationFlags.None, 
-                false, 
-                new Kernel32.ACCESS_MASK());
-
-            return !handle.IsInvalid;
-        }
-
-        /// <summary>
         /// Returns cursor position, without considering screen scales.
         /// </summary>
         /// <param name="handle"></param>
@@ -42,6 +42,9 @@ namespace H.Runners.Utilities
         public static Point GetPhysicalCursorPosition(IntPtr handle)
         {
             User32.GetCursorPos(out var point).Check();
+
+            // TODO: https://github.com/H-Core/H.Runners/issues/5
+            //Trace.WriteLine($"{point.x}, {point.y}");
 
             User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point).Check();
 

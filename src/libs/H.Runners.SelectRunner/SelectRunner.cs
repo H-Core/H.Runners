@@ -86,10 +86,15 @@ namespace H.Runners
 
             Window = Window ?? throw new InvalidOperationException("Window is null.");
 
-            var scaleFactor = await Window.Dispatcher.InvokeAsync(
-                () => Window.GetDpi());
-            var handle = await Window.Dispatcher.InvokeAsync(
-                () => new WindowInteropHelper(Window).Handle);
+            var scaleFactor = 0.0;
+            var handle = (nint)0;
+
+            await Window.Dispatcher.InvokeAsync(() =>
+            {
+                scaleFactor = Window.GetDpi();
+                handle = new WindowInteropHelper(Window).Handle;
+            });
+
             var startPoint = MouseUtilities
                 .GetPhysicalCursorPosition(handle)
                 .ToApp(scaleFactor);
@@ -109,7 +114,7 @@ namespace H.Runners
                 });
             };
             timer.Start();
-            
+
             await Window.Dispatcher.InvokeAsync(() =>
             {
                 Window.Border.Visibility = Visibility.Visible;
@@ -119,7 +124,7 @@ namespace H.Runners
                 //    startPoint,
                 //    new Point(startPoint.X + 1, startPoint.Y + 1));
             });
-            
+
             await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             //var endPoint = MouseUtilities.GetPhysicalCursorPosition(handle)
@@ -163,8 +168,8 @@ namespace H.Runners
             window.Border.Margin = new Thickness(
                 rectangle.Left - window.Left,
                 rectangle.Top - window.Top,
-                window.Width + window.Left - rectangle.Left - rectangle.Width,
-                window.Height + window.Top - rectangle.Top - rectangle.Height);
+                window.Width + window.Left - rectangle.Right,
+                window.Height + window.Top - rectangle.Bottom);
         }
 
         #endregion

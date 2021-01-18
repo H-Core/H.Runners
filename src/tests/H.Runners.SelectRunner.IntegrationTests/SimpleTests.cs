@@ -31,21 +31,12 @@ namespace H.Runners.IntegrationTests
             var process = new Process<ICommand>();
             var task = runner.SelectAsync(process, cancellationToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken).ConfigureAwait(false);
 
-            await process.StopAsync(cancellationToken);
+            await process.StopAsync(cancellationToken).ConfigureAwait(false);
 
-            process = new Process<ICommand>();
-            var task2 = runner.SelectAsync(process, cancellationToken);
-
-            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
-
-            await process.StopAsync(cancellationToken);
-
-            var rectangle = await task;
-            var rectangle2 = await task2;
+            var rectangle = await task.ConfigureAwait(false);
             Console.WriteLine($"{rectangle.Left}, {rectangle.Top}, {rectangle.Right}, {rectangle.Bottom}");
-            Console.WriteLine($"{rectangle2.Left}, {rectangle2.Top}, {rectangle2.Right}, {rectangle2.Bottom}");
         }
 
         [TestMethod]

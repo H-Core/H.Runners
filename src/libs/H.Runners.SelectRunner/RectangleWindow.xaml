@@ -16,5 +16,11 @@
         ShowActivated="False" 
         WindowStyle="None" 
         AllowsTransparency="True">
-    <Border Visibility="Hidden" x:Name="Border" BorderThickness="2" BorderBrush="CornflowerBlue" Background="Transparent"/>
+    <Border 
+        Visibility="Hidden" 
+        x:Name="Border" 
+        BorderThickness="2" 
+        BorderBrush="CornflowerBlue" 
+        Background="Transparent"
+        />
 </Window>
