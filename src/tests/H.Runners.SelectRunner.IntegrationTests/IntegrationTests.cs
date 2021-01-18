@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
+using H.Core.Runners;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Runners.IntegrationTests
@@ -33,6 +34,40 @@ namespace H.Runners.IntegrationTests
 
             using var clipboardRunner = new ClipboardRunner();
             await clipboardRunner.SetClipboardImageAsync(image, cancellationToken);
+        }
+
+        [TestMethod]
+        public async Task ScreenshotCallTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            using var selectRunner = new SelectRunner();
+            using var screenshotRunner = new ScreenshotRunner();
+            using var clipboardRunner = new ClipboardRunner();
+
+            var process = new Process<ICommand>();
+            var selectTask = selectRunner.CallAsync(new Command("select"), process, cancellationToken);
+
+            await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
+
+            await process.StopAsync(cancellationToken);
+
+            var selectOutput = await selectTask;
+
+            Console.WriteLine($"{nameof(selectOutput)}: {selectOutput.Output}");
+
+            var screenshotOutput = await screenshotRunner.CallAsync(
+                new Command("screenshot", selectOutput.Output), 
+                cancellationToken);
+
+            Console.WriteLine($"{nameof(screenshotOutput)}: {screenshotOutput.Output}");
+
+            var clipboardOutput = await clipboardRunner.CallAsync(
+                new Command("clipboard-set-image", screenshotOutput.Output),
+                cancellationToken);
+
+            Console.WriteLine($"{nameof(clipboardOutput)}: {clipboardOutput.Output}");
         }
     }
 }
