@@ -10,7 +10,7 @@ namespace H.Runners.Utilities
     public static class MouseUtilities
     {
         /// <summary>
-        /// 
+        /// Returns cursor position, considering screen scales.
         /// </summary>
         /// <returns></returns>
         public static Point GetVirtualCursorPosition()
@@ -26,16 +26,16 @@ namespace H.Runners.Utilities
         /// <returns></returns>
         public static bool IsDesktop()
         {
-            using var test = User32.OpenInputDesktop(
+            using var handle = User32.OpenInputDesktop(
                 User32.DesktopCreationFlags.None, 
                 false, 
                 new Kernel32.ACCESS_MASK());
 
-            return !test.IsInvalid;
+            return !handle.IsInvalid;
         }
 
         /// <summary>
-        /// 
+        /// Returns cursor position, without considering screen scales.
         /// </summary>
         /// <param name="handle"></param>
         /// <returns></returns>

@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).102</Version>
+    <Version>$(Version).103</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
     <Description>Allows you to screenshot a screen or a portion of the screen.</Description>
     <PackageTags>screenshot, h.runner, h.core, h.framework</PackageTags>
@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="H.Core" Version="0.21.5" />
-    <PackageReference Include="H.Utilities.Screenshoter" Version="1.0.1" />
+    <PackageReference Include="H.Utilities.Screenshoter" Version="1.0.3" />
   </ItemGroup>
 
 </Project>
