@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
-using H.Runners.Utilities;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Runners.IntegrationTests
@@ -10,13 +9,13 @@ namespace H.Runners.IntegrationTests
     [TestClass]
     public class SimpleTests
     {
-        public static void CheckDesktop()
-        {
-            if (!MouseUtilities.IsDesktop())
-            {
-                Assert.Inconclusive("Mouse tests work only on desktop.");
-            }
-        }
+    //    public static void CheckDesktop()
+    //    {
+    //        if (!MouseUtilities.IsDesktop())
+    //        {
+    //            Assert.Inconclusive("Mouse tests work only on desktop.");
+    //        }
+    //    }
 
         [TestMethod]
         public async Task SelectTest()
@@ -24,7 +23,7 @@ namespace H.Runners.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            CheckDesktop();
+            //CheckDesktop();
 
             using var runner = new SelectRunner();
 
@@ -37,16 +36,6 @@ namespace H.Runners.IntegrationTests
 
             var rectangle = await task.ConfigureAwait(false);
             Console.WriteLine($"{rectangle.Left}, {rectangle.Top}, {rectangle.Right}, {rectangle.Bottom}");
-        }
-
-        [TestMethod]
-        public void GetVirtualCursorPositionTest()
-        {
-            CheckDesktop();
-
-            var point = MouseUtilities.GetVirtualCursorPosition();
-
-            Console.WriteLine($"{point.X}, {point.Y}");
         }
     }
 }
