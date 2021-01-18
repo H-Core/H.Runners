@@ -3,11 +3,10 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Interop;
 using H.Core;
 using H.Core.Runners;
+using H.Hooks;
 using H.Runners.Extensions;
-using H.Runners.Utilities;
 using Point = System.Drawing.Point;
 using Timer = System.Timers.Timer;
 
@@ -86,27 +85,40 @@ namespace H.Runners
 
             Window = Window ?? throw new InvalidOperationException("Window is null.");
 
-            var scaleFactor = 0.0;
-            var handle = (nint)0;
+            var scaleFactor = await Window.Dispatcher.InvokeAsync(() => Window.GetDpi());
 
-            await Window.Dispatcher.InvokeAsync(() =>
+            var startPoint = new Point();
+            var endPoint = new Point();
+            var currentPoint = new Point();
+            using var hook = new LowLevelMouseHook();
+
+            var isInitialized = false;
+            hook.MouseMove += (_, args) =>
             {
-                scaleFactor = Window.GetDpi();
-                handle = new WindowInteropHelper(Window).Handle;
-            });
+                currentPoint = new Point(args.X, args.Y);
+                if (isInitialized)
+                {
+                    return;
+                }
 
-            var startPoint = MouseUtilities
-                .GetPhysicalCursorPosition(handle)
-                .ToApp(scaleFactor);
-            var endPoint = startPoint;
+                startPoint = currentPoint.ToApp(scaleFactor);
+                endPoint = startPoint;
+                isInitialized = true;
+            };
+            hook.Start();
 
-            using var timer = new Timer(1);
+            using var timer = new Timer(15);
             timer.Elapsed += (_, _) =>
             {
+                if (!isInitialized)
+                {
+                    return;
+                }
+
+                endPoint = currentPoint.ToApp(scaleFactor);
+
                 Window.Dispatcher.Invoke(() =>
                 {
-                    endPoint = MouseUtilities.GetPhysicalCursorPosition(handle).ToApp(scaleFactor);
-
                     ApplyRectangle(
                         Window, 
                         startPoint,
@@ -118,19 +130,12 @@ namespace H.Runners
             await Window.Dispatcher.InvokeAsync(() =>
             {
                 Window.Border.Visibility = Visibility.Visible;
-
-                //ApplyRectangle(
-                //    Window,
-                //    startPoint,
-                //    new Point(startPoint.X + 1, startPoint.Y + 1));
             });
 
             await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            //var endPoint = MouseUtilities.GetPhysicalCursorPosition(handle)
-            //    .ToApp(scaleFactor);
-
             timer.Stop();
+            hook.Stop();
 
             await Window.Dispatcher.InvokeAsync(() =>
             {

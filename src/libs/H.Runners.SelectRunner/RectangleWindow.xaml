@@ -15,12 +15,14 @@
         ResizeMode="NoResize" 
         ShowActivated="False" 
         WindowStyle="None" 
-        AllowsTransparency="True">
+        AllowsTransparency="True"
+        >
     <Border 
         Visibility="Hidden" 
         x:Name="Border" 
         BorderThickness="2" 
         BorderBrush="CornflowerBlue" 
         Background="Transparent"
+        IsHitTestVisible="False"
         />
 </Window>

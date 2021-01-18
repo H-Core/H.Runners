@@ -43,59 +43,30 @@ namespace H.Runners.Utilities
         {
             User32.GetCursorPos(out var point).Check();
 
-            // TODO: https://github.com/H-Core/H.Runners/issues/5
-            //Trace.WriteLine($"{point.x}, {point.y}");
+            //var hWnd = User32.WindowFromPhysicalPoint(point);
+            //var visible = User32.IsWindowVisible(hWnd);
+            //var awareness = User32.GetWindowDpiAwarenessContext(hWnd);
+            //var dpiFromContext = User32.GetDpiFromDpiAwarenessContext(awareness);
+            //var dpi = User32.GetDpiForWindow(hWnd);
+            //var text = User32.GetWindowText(hWnd);
+            //if (dpiFromContext > 0)
+            //{
+            //    var scaleFactor = dpiFromContext / 96.0;
+
+            //    point = new POINT
+            //    {
+            //        x = (int)Math.Round(scaleFactor * point.x),
+            //        y = (int)Math.Round(scaleFactor * point.y),
+            //    };
+            //}
+            //var cursorPoint = point;
 
             User32.LogicalToPhysicalPointForPerMonitorDPI(handle, ref point).Check();
 
+            // TODO: https://github.com/H-Core/H.Runners/issues/5
+            // Trace.WriteLine($"{cursorPoint.x}, {cursorPoint.y}, {point.x}, {point.y}, {hWnd}, {dpi}, {dpiFromContext}, {text}, {visible}");
+
             return new Point(point.x, point.y);
-        }
-
-        /// <summary>
-        /// Converts physical point to app point.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <param name="scaleFactor"></param>
-        /// <returns></returns>
-        public static Point ToApp(this Point point, double scaleFactor)
-        {
-            return new (
-                (int)Math.Round(scaleFactor * point.X), 
-                (int)Math.Round(scaleFactor * point.Y));
-        }
-
-        /// <summary>
-        /// Converts app point to physical point.
-        /// </summary>
-        /// <param name="point"></param>
-        /// <param name="scaleFactor"></param>
-        /// <returns></returns>
-        public static Point ToPhysical(this Point point, double scaleFactor)
-        {
-            return new(
-                (int)Math.Round(point.X / scaleFactor), 
-                (int)Math.Round(point.Y / scaleFactor)
-                );
-        }
-
-        /// <summary>
-        /// Converts app rectangle to physical rectangle.
-        /// </summary>
-        /// <param name="rectangle"></param>
-        /// <param name="scaleFactor"></param>
-        /// <returns></returns>
-        public static Rectangle ToPhysical(this Rectangle rectangle, double scaleFactor)
-        {
-            var point1 = new Point(rectangle.Left, rectangle.Top)
-                .ToPhysical(scaleFactor);
-            var point2 = new Point(rectangle.Right, rectangle.Bottom)
-                .ToPhysical(scaleFactor);
-
-            return Rectangle.FromLTRB(
-                point1.X, 
-                point1.Y,
-                point2.X, 
-                point2.Y);
         }
     }
 }
