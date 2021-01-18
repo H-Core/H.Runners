@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).103</Version>
+    <Version>$(Version).104</Version>
     <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
     <Description>Allows you thread-safe clipboard access.</Description>
     <PackageTags>clipboard, wpf, h.runner, h.core, h.framework</PackageTags>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -38,6 +39,15 @@ namespace H.Runners
                 var text = await GetClipboardTextAsync(cancellationToken).ConfigureAwait(false);
 
                 return new Value(text);
+            }));
+            Add(new AsyncAction("clipboard-set-image", async (command, cancellationToken) =>
+            {
+                using var stream = new MemoryStream(command.Input.Data);
+                var image = Image.FromStream(stream);
+
+                await SetClipboardImageAsync(image, cancellationToken).ConfigureAwait(false);
+
+                return Value.Empty;
             }));
         }
 
