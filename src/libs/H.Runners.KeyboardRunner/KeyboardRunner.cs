@@ -1,6 +1,8 @@
-﻿using System;
+﻿using System.Linq;
 using System.Windows.Forms;
 using H.Core.Runners;
+using H.Runners.Extensions;
+using Keys = H.Core.Keys;
 
 namespace H.Runners
 {
@@ -16,7 +18,14 @@ namespace H.Runners
         /// </summary>
         public KeyboardRunner()
         {
-            Add(SyncAction.WithSingleArgument("keyboard", Keyboard, "CONTROL+V"));
+            Add(SyncAction.WithArguments("keyboard", arguments =>
+            {
+                var values = arguments
+                    .Select(Keys.Parse)
+                    .ToArray();
+
+                Keyboard(values);
+            }, "CONTROL+V"));
         }
 
         #endregion
@@ -27,12 +36,13 @@ namespace H.Runners
         /// Current implementation uses <seealso cref="SendKeys.Send"/>. <br/>
         /// See https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=net-5.0.
         /// </summary>
-        /// <param name="command"></param>
-        public void Keyboard(string command)
+        /// <param name="values"></param>
+        public void Keyboard(params Keys[] values)
         {
-            command = command ?? throw new ArgumentNullException(command);
-            
-            SendKeys.SendWait(command);
+            foreach (var keys in values)
+            {
+                SendKeys.SendWait(keys.ToSendKeys());
+            }
         }
 
         #endregion
