@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using H.Core;
 using H.Core.Runners;
 using H.Core.TestHelpers;
+using H.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Runners.IntegrationTests
@@ -17,7 +18,8 @@ namespace H.Runners.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            using var runner = new ClipboardRunner();
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
+            using var runner = new ClipboardRunner(app.Dispatcher).WithLogging();
 
             await runner.SetClipboardTextAsync("123", cancellationToken);
             var text = await runner.GetClipboardTextAsync(cancellationToken);
@@ -31,7 +33,8 @@ namespace H.Runners.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            using var runner = new ClipboardRunner().WithLogging();
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
+            using var runner = new ClipboardRunner(app.Dispatcher).WithLogging();
 
             await runner.CallAsync(new Command("clipboard-set-text", "123"), cancellationToken);
             var output = await runner.CallAsync(new Command("clipboard-get-text"), cancellationToken);

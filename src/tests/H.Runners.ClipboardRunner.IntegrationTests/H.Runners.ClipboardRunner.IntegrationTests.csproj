@@ -1,12 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <TargetFrameworks>net4.8;net5.0-windows</TargetFrameworks>
     <RootNamespace>H.Runners.IntegrationTests</RootNamespace>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core.TestHelpers" Version="0.22.3" />
+    <PackageReference Include="H.Core.TestHelpers" Version="0.22.4" />
+    <PackageReference Include="H.Tests.WPF" Version="1.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.0-preview-20201020-06" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />
     <PackageReference Include="MSTest.TestFramework" Version="2.1.2" />

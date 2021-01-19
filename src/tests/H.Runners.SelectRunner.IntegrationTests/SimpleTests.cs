@@ -2,6 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using H.Core;
+using H.Core.TestHelpers;
+using H.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace H.Runners.IntegrationTests
@@ -16,7 +18,7 @@ namespace H.Runners.IntegrationTests
             var cancellationToken = cancellationTokenSource.Token;
 
             using var app = await TestWpfApp.CreateAsync(cancellationToken);
-            using var runner = new SelectRunner(app.Dispatcher);
+            using var runner = new SelectRunner(app.Dispatcher).WithLogging();
 
             var process = new Process<ICommand>();
             var task = runner.SelectAsync(process, cancellationToken);
