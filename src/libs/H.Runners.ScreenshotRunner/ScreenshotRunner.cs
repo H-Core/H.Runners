@@ -35,7 +35,7 @@ namespace H.Runners
                         Convert.ToInt32(arguments[3], CultureInfo.InvariantCulture)
                         );
 
-                var image = await ShotAsync(rectangle, cancellationToken)
+                using var image = await ShotAsync(rectangle, cancellationToken)
                     .ConfigureAwait(false);
                 using var stream = new MemoryStream();
                 image.Save(stream, ImageFormat.Bmp);

@@ -47,7 +47,7 @@ namespace H.Runners
             Add(new AsyncAction("clipboard-set-image", async (command, cancellationToken) =>
             {
                 using var stream = new MemoryStream(command.Input.Data);
-                var image = Image.FromStream(stream);
+                using var image = Image.FromStream(stream);
 
                 await SetClipboardImageAsync(image, cancellationToken).ConfigureAwait(false);
 

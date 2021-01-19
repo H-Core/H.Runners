@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).107</Version>
+    <Version>$(Version).108</Version>
     <PackageReleaseNotes>
 fix: Fixed ClipboardRunner initialise method.
 fix: Added ClipboardRunner.Dispather property.
