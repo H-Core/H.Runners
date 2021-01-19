@@ -25,11 +25,11 @@ jobs:
     - name: Clean
       run: dotnet clean --configuration Release && dotnet nuget locals all --clear
     
-    - name: Build
-      run: dotnet build --configuration Release --nologo
-    
-    - name: Run tests
-      run: dotnet test --configuration Release --nologo
+    - name: Build and run tests
+      run: dotnet test
+        --configuration Release
+        --nologo
+        /p:ContinuousIntegrationBuild=true;DeterministicSourcePaths=true
         
     - name: Publish
       run: dotnet nuget push
