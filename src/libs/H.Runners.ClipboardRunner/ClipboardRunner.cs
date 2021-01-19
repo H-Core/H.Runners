@@ -18,10 +18,7 @@ namespace H.Runners
     {
         #region Properties
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public Dispatcher? Dispatcher { get; set; }
+        private Dispatcher Dispatcher { get; }
 
         #endregion
 
@@ -30,8 +27,10 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public ClipboardRunner()
+        public ClipboardRunner(Dispatcher dispatcher)
         {
+            Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
             Add(new AsyncAction("clipboard-set-text", async (command, cancellationToken) =>
             {
                 await SetClipboardTextAsync(command.Input.Argument, cancellationToken).ConfigureAwait(false);
@@ -57,75 +56,37 @@ namespace H.Runners
 
         #endregion
 
-        #region Methods
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        public async Task InitializeAsync(CancellationToken cancellationToken = default)
-        {
-            if (Application.Current != null)
-            {
-                Dispatcher = Application.Current.Dispatcher;
-                return;
-            }
-
-            var thread = new Thread(() =>
-            {
-                var application = new Application();
-                application.Startup += (_, _) =>
-                {
-                    Dispatcher = application.Dispatcher;
-                };
-                application.Run();
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-
-            while (Dispatcher == null)
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken).ConfigureAwait(false);
-            }
-        }
-
-        private async Task<Dispatcher> GetDispatcherAsync(
-            CancellationToken cancellationToken = default)
-        {
-            if (Dispatcher == null)
-            {
-                await InitializeAsync(cancellationToken).ConfigureAwait(false);
-            }
-
-            return Dispatcher ?? throw new InvalidOperationException("Application is null.");
-        }
+        #region Public methods
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="text"></param>
         /// <param name="cancellationToken"></param>
-        public async Task SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task SetClipboardTextAsync(
+            string text, 
+            CancellationToken cancellationToken = default)
         {
-            var dispatcher = await GetDispatcherAsync(cancellationToken)
-                .ConfigureAwait(false);
+            text = text ?? throw new ArgumentNullException(nameof(text));
 
-            await dispatcher.InvokeAsync(() => Clipboard.SetText(text));
+            await Dispatcher.InvokeAsync(
+                () => Clipboard.SetText(text),
+                DispatcherPriority.Normal,
+                cancellationToken);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="cancellationToken"></param>
-        public async Task<string> GetClipboardTextAsync(CancellationToken cancellationToken = default)
+        public async Task<string> GetClipboardTextAsync(
+            CancellationToken cancellationToken = default)
         {
-            var dispatcher = await GetDispatcherAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            var text = await dispatcher.InvokeAsync(Clipboard.GetText);
-
-            return text ?? string.Empty;
+            return await Dispatcher.InvokeAsync(
+                Clipboard.GetText,
+                DispatcherPriority.Normal,
+                cancellationToken) ?? string.Empty;
         }
 
         /// <summary>
@@ -133,14 +94,17 @@ namespace H.Runners
         /// </summary>
         /// <param name="image"></param>
         /// <param name="cancellationToken"></param>
-        public async Task SetClipboardImageAsync(Image image, CancellationToken cancellationToken = default)
+        /// <exception cref="ArgumentNullException"></exception>
+        public async Task SetClipboardImageAsync(
+            Image image, 
+            CancellationToken cancellationToken = default)
         {
             image = image ?? throw new ArgumentNullException(nameof(image));
 
-            var dispatcher = await GetDispatcherAsync(cancellationToken)
-                .ConfigureAwait(false);
-
-            await dispatcher.InvokeAsync(() => Clipboard.SetImage(image.ToBitmapImage()));
+            await Dispatcher.InvokeAsync(
+                () => Clipboard.SetImage(image.ToBitmapImage()),
+                DispatcherPriority.Normal,
+                cancellationToken);
         }
 
         #endregion
