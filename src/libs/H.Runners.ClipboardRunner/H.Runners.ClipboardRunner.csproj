@@ -7,9 +7,10 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).105</Version>
+    <Version>$(Version).106</Version>
     <PackageReleaseNotes>
 fix: Fixed ClipboardRunner initialise method.
+fix: Added ClipboardRunner.Dispather property.
 $(PackageReleaseNotes)
     </PackageReleaseNotes>
     <Description>Allows you thread-safe clipboard access.</Description>

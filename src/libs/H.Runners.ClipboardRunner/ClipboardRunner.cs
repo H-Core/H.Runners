@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using H.Core;
 using H.Core.Runners;
 using H.Runners.Extensions;
@@ -17,7 +18,10 @@ namespace H.Runners
     {
         #region Properties
 
-        private Application? Application { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Dispatcher? Dispatcher { get; set; }
 
         #endregion
 
@@ -62,29 +66,39 @@ namespace H.Runners
         /// <returns></returns>
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
+            if (Application.Current != null)
+            {
+                Dispatcher = Application.Current.Dispatcher;
+                return;
+            }
+
             var thread = new Thread(() =>
             {
-                Application = new Application();
-                Application.Run();
+                var application = new Application();
+                application.Startup += (_, _) =>
+                {
+                    Dispatcher = application.Dispatcher;
+                };
+                application.Run();
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
-            while (Application == null)
+            while (Dispatcher == null)
             {
                 await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken).ConfigureAwait(false);
             }
         }
 
-        private async Task<Application> GetApplicationAsync(
+        private async Task<Dispatcher> GetDispatcherAsync(
             CancellationToken cancellationToken = default)
         {
-            if (Application == null)
+            if (Dispatcher == null)
             {
                 await InitializeAsync(cancellationToken).ConfigureAwait(false);
             }
 
-            return Application ?? throw new InvalidOperationException("Application is null.");
+            return Dispatcher ?? throw new InvalidOperationException("Application is null.");
         }
 
         /// <summary>
@@ -94,10 +108,10 @@ namespace H.Runners
         /// <param name="cancellationToken"></param>
         public async Task SetClipboardTextAsync(string text, CancellationToken cancellationToken = default)
         {
-            var application = await GetApplicationAsync(cancellationToken)
+            var dispatcher = await GetDispatcherAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            await application.Dispatcher.InvokeAsync(() => Clipboard.SetText(text));
+            await dispatcher.InvokeAsync(() => Clipboard.SetText(text));
         }
 
         /// <summary>
@@ -106,10 +120,10 @@ namespace H.Runners
         /// <param name="cancellationToken"></param>
         public async Task<string> GetClipboardTextAsync(CancellationToken cancellationToken = default)
         {
-            var application = await GetApplicationAsync(cancellationToken)
+            var dispatcher = await GetDispatcherAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            var text = await application.Dispatcher.InvokeAsync(Clipboard.GetText);
+            var text = await dispatcher.InvokeAsync(Clipboard.GetText);
 
             return text ?? string.Empty;
         }
@@ -123,10 +137,10 @@ namespace H.Runners
         {
             image = image ?? throw new ArgumentNullException(nameof(image));
 
-            var application = await GetApplicationAsync(cancellationToken)
+            var dispatcher = await GetDispatcherAsync(cancellationToken)
                 .ConfigureAwait(false);
 
-            await application.Dispatcher.InvokeAsync(() => Clipboard.SetImage(image.ToBitmapImage()));
+            await dispatcher.InvokeAsync(() => Clipboard.SetImage(image.ToBitmapImage()));
         }
 
         #endregion
