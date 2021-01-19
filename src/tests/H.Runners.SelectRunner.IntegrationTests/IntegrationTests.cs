@@ -16,7 +16,8 @@ namespace H.Runners.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            using var runner = new SelectRunner();
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
+            using var runner = new SelectRunner(app.Dispatcher);
 
             var process = new Process<ICommand>();
             var task = runner.SelectAsync(process, cancellationToken);
@@ -32,7 +33,7 @@ namespace H.Runners.IntegrationTests
             using var screenshotRunner = new ScreenshotRunner();
             var image = await screenshotRunner.ShotAsync(rectangle, cancellationToken);
 
-            using var clipboardRunner = new ClipboardRunner();
+            using var clipboardRunner = new ClipboardRunner(app.Dispatcher);
             await clipboardRunner.SetClipboardImageAsync(image, cancellationToken);
         }
 
@@ -42,9 +43,8 @@ namespace H.Runners.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            using var selectRunner = new SelectRunner();
-            using var screenshotRunner = new ScreenshotRunner();
-            using var clipboardRunner = new ClipboardRunner();
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
+            using var selectRunner = new SelectRunner(app.Dispatcher);
 
             var process = new Process<ICommand>();
             var selectTask = selectRunner.CallAsync(new Command("select"), process, cancellationToken);
@@ -56,12 +56,16 @@ namespace H.Runners.IntegrationTests
             var selectOutput = await selectTask;
 
             Console.WriteLine($"{nameof(selectOutput)}: {selectOutput.Output}");
+            
+            using var screenshotRunner = new ScreenshotRunner();
 
             var screenshotOutput = await screenshotRunner.CallAsync(
                 new Command("screenshot", selectOutput.Output), 
                 cancellationToken);
 
             Console.WriteLine($"{nameof(screenshotOutput)}: {screenshotOutput.Output}");
+
+            using var clipboardRunner = new ClipboardRunner(app.Dispatcher);
 
             var clipboardOutput = await clipboardRunner.CallAsync(
                 new Command("clipboard-set-image", screenshotOutput.Output),

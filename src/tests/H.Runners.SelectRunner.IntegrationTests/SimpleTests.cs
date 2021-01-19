@@ -15,7 +15,8 @@ namespace H.Runners.IntegrationTests
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
-            using var runner = new SelectRunner();
+            using var app = await TestWpfApp.CreateAsync(cancellationToken);
+            using var runner = new SelectRunner(app.Dispatcher);
 
             var process = new Process<ICommand>();
             var task = runner.SelectAsync(process, cancellationToken);
