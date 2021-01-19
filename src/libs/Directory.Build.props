@@ -4,6 +4,7 @@
 
   <PropertyGroup Label="Common">
     <InvariantGlobalization>true</InvariantGlobalization>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
 
   <PropertyGroup Label="Plugins">
@@ -21,9 +22,9 @@
   </ItemGroup>
 
   <PropertyGroup Label="Nuget">
-    <Version>0.22.1</Version>
+    <Version>0.22.3</Version>
     <PackageReleaseNotes>
-To H.Core 0.22.1.
+To H.Core 0.22.3.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
