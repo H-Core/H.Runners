@@ -7,9 +7,10 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).105</Version>
+    <Version>$(Version).106</Version>
     <PackageReleaseNotes>
-fix: Fixed SelectRunner output.
+fix(SelectRunner): Fixed output.
+fix(SelectRunner): Fixed application initialize method.
 $(PackageReleaseNotes)
     </PackageReleaseNotes>
     <Description>Allows you to select a portion of the screen.</Description>

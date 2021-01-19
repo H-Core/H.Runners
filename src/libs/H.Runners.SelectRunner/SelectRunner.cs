@@ -54,10 +54,21 @@ namespace H.Runners
         /// <returns></returns>
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            var thread = new Thread(() =>
+            if (Application.Current != null)
             {
                 Window = new RectangleWindow();
-                Window.ShowDialog();
+                Window.Show();
+                return;
+            }
+
+            var thread = new Thread(() =>
+            {
+                var application = new Application();
+                application.Startup += (_, _) =>
+                {
+                    Window = application.MainWindow as RectangleWindow;
+                };
+                application.Run(new RectangleWindow());
             });
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
