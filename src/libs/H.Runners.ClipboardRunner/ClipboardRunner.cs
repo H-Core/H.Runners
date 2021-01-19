@@ -62,12 +62,6 @@ namespace H.Runners
         /// <returns></returns>
         public async Task InitializeAsync(CancellationToken cancellationToken = default)
         {
-            if (Application.Current != null)
-            {
-                Application = Application.Current;
-                return;
-            }
-
             var thread = new Thread(() =>
             {
                 Application = new Application();

@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).104</Version>
-    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Version>$(Version).105</Version>
+    <PackageReleaseNotes>
+fix: Fixed ClipboardRunner initialise method.
+$(PackageReleaseNotes)
+    </PackageReleaseNotes>
     <Description>Allows you thread-safe clipboard access.</Description>
     <PackageTags>clipboard, wpf, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
