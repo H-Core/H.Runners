@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using H.Core;
 using H.Core.Runners;
+using H.Core.Utilities;
 using H.Hooks;
 using H.Runners.Extensions;
 using Point = System.Drawing.Point;
@@ -20,6 +22,7 @@ namespace H.Runners
         #region Properties
 
         private RectangleWindow? Window { get; set; }
+        private Dispatcher Dispatcher { get; }
 
         #endregion
 
@@ -28,8 +31,11 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public SelectRunner()
+        /// <exception cref="ArgumentNullException"></exception>
+        public SelectRunner(Dispatcher dispatcher)
         {
+            Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
+
             Add(new ProcessAction("select", async (process, _, cancellationToken) =>
             {
                 var rectangle = await SelectAsync(process, cancellationToken)
@@ -52,31 +58,14 @@ namespace H.Runners
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task InitializeAsync(CancellationToken cancellationToken = default)
+        public async Task InitializeAsync(
+            CancellationToken cancellationToken = default)
         {
-            if (Application.Current != null)
+            await Dispatcher.InvokeAsync(() =>
             {
                 Window = new RectangleWindow();
                 Window.Show();
-                return;
-            }
-
-            var thread = new Thread(() =>
-            {
-                var application = new Application();
-                application.Startup += (_, _) =>
-                {
-                    Window = application.MainWindow as RectangleWindow;
-                };
-                application.Run(new RectangleWindow());
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-
-            while (Window == null)
-            {
-                await Task.Delay(TimeSpan.FromMilliseconds(1), cancellationToken).ConfigureAwait(false);
-            }
+            }, DispatcherPriority.Normal, cancellationToken);
         }
 
         /// <summary>
@@ -84,8 +73,12 @@ namespace H.Runners
         /// </summary>
         /// <param name="process"></param>
         /// <param name="cancellationToken"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         /// <returns></returns>
-        public async Task<Rectangle> SelectAsync(IProcess<ICommand> process, CancellationToken cancellationToken = default)
+        public async Task<Rectangle> SelectAsync(
+            IProcess<ICommand> process, 
+            CancellationToken cancellationToken = default)
         {
             process = process ?? throw new ArgumentNullException(nameof(process));
 
@@ -96,12 +89,22 @@ namespace H.Runners
 
             Window = Window ?? throw new InvalidOperationException("Window is null.");
 
-            var scaleFactor = await Window.Dispatcher.InvokeAsync(() => Window.GetDpi());
+            var scaleFactor = await Dispatcher.InvokeAsync(
+                () => Window.GetDpi(), 
+                DispatcherPriority.Normal, 
+                cancellationToken);
 
             var startPoint = new Point();
             var endPoint = new Point();
             var currentPoint = new Point();
+
+            using var exceptions = new ExceptionsBag();
             using var hook = new LowLevelMouseHook();
+            hook.ExceptionOccurred += (_, exception) =>
+            {
+                // ReSharper disable once AccessToDisposedClosure
+                exceptions.OnOccurred(exception);
+            };
 
             var isInitialized = false;
             hook.MouseMove += (_, args) =>
@@ -128,7 +131,7 @@ namespace H.Runners
 
                 endPoint = currentPoint.ToApp(scaleFactor);
 
-                Window.Dispatcher.Invoke(() =>
+                Dispatcher.Invoke(() =>
                 {
                     ApplyRectangle(
                         Window, 
@@ -138,20 +141,24 @@ namespace H.Runners
             };
             timer.Start();
 
-            await Window.Dispatcher.InvokeAsync(() =>
+            await Dispatcher.InvokeAsync(() =>
             {
+                ApplyRectangle(
+                    Window,
+                    startPoint,
+                    endPoint);
                 Window.Border.Visibility = Visibility.Visible;
-            });
+            }, DispatcherPriority.Normal, cancellationToken);
 
             await process.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            timer.Stop();
-            hook.Stop();
+            timer.Dispose();
+            hook.Dispose();
 
-            await Window.Dispatcher.InvokeAsync(() =>
+            await Dispatcher.InvokeAsync(() =>
             {
                 Window.Border.Visibility = Visibility.Hidden;
-            });
+            }, DispatcherPriority.Normal, cancellationToken);
 
             return startPoint
                 .ToRectangle(endPoint)
@@ -162,15 +169,20 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public override void Dispose()
+        public async ValueTask DisposeAsync()
         {
-            Window?.Dispatcher.Invoke(() =>
+            if (Window == null)
+            {
+                return;
+            }
+
+            await Window.Dispatcher.InvokeAsync(() =>
             {
                 Window.Close();
             });
             Window = null;
 
-            base.Dispose();
+            Dispose();
         }
 
         #endregion

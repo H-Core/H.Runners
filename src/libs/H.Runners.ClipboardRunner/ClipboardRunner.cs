@@ -27,6 +27,7 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
+        /// <exception cref="ArgumentNullException"></exception>
         public ClipboardRunner(Dispatcher dispatcher)
         {
             Dispatcher = dispatcher ?? throw new ArgumentNullException(nameof(dispatcher));
