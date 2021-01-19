@@ -169,20 +169,20 @@ namespace H.Runners
         /// <summary>
         /// 
         /// </summary>
-        public async ValueTask DisposeAsync()
+        public override void Dispose()
         {
             if (Window == null)
             {
                 return;
             }
 
-            await Window.Dispatcher.InvokeAsync(() =>
+            Dispatcher.Invoke(() =>
             {
                 Window.Close();
             });
             Window = null;
 
-            Dispose();
+            base.Dispose();
         }
 
         #endregion

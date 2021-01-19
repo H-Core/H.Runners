@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFrameworks>net4.6.1;netcoreapp3.1;net5.0-windows</TargetFrameworks>
+    <TargetFrameworks>net4.5;netcoreapp3.1;net5.0-windows</TargetFrameworks>
     <RootNamespace>H.Runners</RootNamespace>
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).107</Version>
+    <Version>$(Version).108</Version>
     <PackageReleaseNotes>
 fix(SelectRunner): Fixed output.
 fix(SelectRunner): Fixed application initialize method.
@@ -20,10 +20,6 @@ $(PackageReleaseNotes)
   <ItemGroup>
     <PackageReference Include="H.Core" Version="0.22.3" />
     <PackageReference Include="H.Hooks" Version="1.2.2" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net4.6.1' ">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="5.0.0" />
   </ItemGroup>
 
 </Project>
