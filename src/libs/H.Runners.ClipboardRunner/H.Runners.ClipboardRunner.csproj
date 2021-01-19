@@ -19,7 +19,7 @@ $(PackageReleaseNotes)
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.22.3" />
+    <PackageReference Include="H.Core" Version="0.22.4" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
