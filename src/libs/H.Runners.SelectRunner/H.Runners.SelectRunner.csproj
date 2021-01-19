@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).104</Version>
-    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Version>$(Version).105</Version>
+    <PackageReleaseNotes>
+fix: Fixed SelectRunner output.
+$(PackageReleaseNotes)
+    </PackageReleaseNotes>
     <Description>Allows you to select a portion of the screen.</Description>
     <PackageTags>select, wpf, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>

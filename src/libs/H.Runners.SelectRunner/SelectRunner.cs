@@ -36,11 +36,11 @@ namespace H.Runners
                     .ConfigureAwait(false);
 
                 return new Value(
-                    $"{rectangle.Left}", 
-                    $"{rectangle.Top}", 
-                    $"{rectangle.Right}", 
-                    $"{rectangle.Bottom}");
-            }));
+                    $"{rectangle.X}", 
+                    $"{rectangle.Y}", 
+                    $"{rectangle.Width}", 
+                    $"{rectangle.Height}");
+            }, "Returns: x, y, width, height"));
         }
 
         #endregion
