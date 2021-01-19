@@ -29,7 +29,8 @@ jobs:
       run: dotnet test
         --configuration Release
         --nologo
-        /p:ContinuousIntegrationBuild=true;DeterministicSourcePaths=true
+        /p:ContinuousIntegrationBuild=true
+        /p:DeterministicSourcePaths=true
         
     - name: Publish
       run: dotnet nuget push
