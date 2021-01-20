@@ -7,14 +7,18 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).101</Version>
-    <PackageReleaseNotes>$(PackageReleaseNotes)</PackageReleaseNotes>
+    <Version>$(Version).102</Version>
+    <PackageReleaseNotes>
+To H.InputSimulator.
+$(PackageReleaseNotes)
+    </PackageReleaseNotes>
     <Description>Allows you to send keyboard events to system.</Description>
     <PackageTags>keyboard, winforms, h.runner, h.core, h.framework</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="H.Core" Version="0.22.4" />
+    <PackageReference Include="H.InputSimulator" Version="1.0.8" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using System.Windows.Forms;
+using WindowsInput;
+using WindowsInput.Native;
 using H.Core.Runners;
-using H.Runners.Extensions;
 using Keys = H.Core.Keys;
 
 namespace H.Runners
@@ -33,15 +33,22 @@ namespace H.Runners
         #region Private methods
 
         /// <summary>
-        /// Current implementation uses <seealso cref="SendKeys.Send"/>. <br/>
-        /// See https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.sendkeys.send?view=net-5.0.
+        /// Current implementation uses <seealso cref="InputSimulator"/>. <br/>
         /// </summary>
         /// <param name="values"></param>
         public void Keyboard(params Keys[] values)
         {
+            var simulator = new InputSimulator();
             foreach (var keys in values)
             {
-                SendKeys.SendWait(keys.ToSendKeys());
+                foreach (var key in keys.Values)
+                {
+                    simulator.Keyboard.KeyDown((VirtualKeyCode)key);
+                }
+                foreach (var key in keys.Values.Reverse())
+                {
+                    simulator.Keyboard.KeyUp((VirtualKeyCode)key);
+                }
             }
         }
 

@@ -23,15 +23,35 @@ namespace H.Runners.IntegrationTests
         }
 
         [TestMethod]
+        public void KeyboardCtrlVTest()
+        {
+            using var runner = new KeyboardRunner();
+
+            runner.Keyboard(new Keys(Key.LCtrl, Key.V));
+        }
+
+        [TestMethod]
         public async Task Keyboard123CallTest()
         {
             using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
             var cancellationToken = cancellationTokenSource.Token;
 
             using var runner = new KeyboardRunner();
-
+            
             await runner.CallAsync(
                 new Command("keyboard", "D1", "D2", "D3"), cancellationToken);
+        }
+
+        [TestMethod]
+        public async Task KeyboardCtrlVCallTest()
+        {
+            using var cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            var cancellationToken = cancellationTokenSource.Token;
+
+            using var runner = new KeyboardRunner();
+            
+            await runner.CallAsync(
+                new Command("keyboard", "CTRL+V"), cancellationToken);
         }
     }
 }
