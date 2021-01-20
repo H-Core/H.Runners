@@ -22,9 +22,9 @@
   </ItemGroup>
 
   <PropertyGroup Label="Nuget">
-    <Version>0.22.4</Version>
+    <Version>0.22.5</Version>
     <PackageReleaseNotes>
-feat: To H.Core 0.22.4.
+feat: To H.Core 0.22.5.
     </PackageReleaseNotes>
     <GeneratePackageOnBuild Condition=" '$(Configuration)' == 'Release' ">true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>

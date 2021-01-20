@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="NuGet">
-    <Version>$(Version).102</Version>
+    <Version>$(Version).103</Version>
     <PackageReleaseNotes>
 To H.InputSimulator.
 $(PackageReleaseNotes)
@@ -17,8 +17,8 @@ $(PackageReleaseNotes)
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.22.4" />
-    <PackageReference Include="H.InputSimulator" Version="1.0.8" />
+    <PackageReference Include="H.Core" Version="0.22.5" />
+    <PackageReference Include="H.InputSimulator" Version="1.1.0" />
   </ItemGroup>
 
 </Project>

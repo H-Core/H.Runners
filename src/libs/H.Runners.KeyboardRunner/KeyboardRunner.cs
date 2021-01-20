@@ -11,6 +11,12 @@ namespace H.Runners
     /// </summary>
     public sealed class KeyboardRunner : Runner
     {
+        #region Properties
+
+        private InputSimulator InputSimulator { get; } = new();
+
+        #endregion
+
         #region Constructors
 
         /// <summary>
@@ -38,16 +44,15 @@ namespace H.Runners
         /// <param name="values"></param>
         public void Keyboard(params Keys[] values)
         {
-            var simulator = new InputSimulator();
             foreach (var keys in values)
             {
                 foreach (var key in keys.Values)
                 {
-                    simulator.Keyboard.KeyDown((VirtualKeyCode)key);
+                    InputSimulator.Keyboard.KeyDown((VirtualKeyCode)key);
                 }
                 foreach (var key in keys.Values.Reverse())
                 {
-                    simulator.Keyboard.KeyUp((VirtualKeyCode)key);
+                    InputSimulator.Keyboard.KeyUp((VirtualKeyCode)key);
                 }
             }
         }

@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.22.4" />
+    <PackageReference Include="H.Core" Version="0.22.5" />
     <PackageReference Include="SpotifyAPI.Web" Version="6.0.0" />
     <PackageReference Include="SpotifyAPI.Web.Auth" Version="6.0.0" />
   </ItemGroup>

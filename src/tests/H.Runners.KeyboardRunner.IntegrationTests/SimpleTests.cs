@@ -39,7 +39,7 @@ namespace H.Runners.IntegrationTests
             using var runner = new KeyboardRunner();
             
             await runner.CallAsync(
-                new Command("keyboard", "D1", "D2", "D3"), cancellationToken);
+                new Command("keyboard", "1", "2", "3"), cancellationToken);
         }
 
         [TestMethod]

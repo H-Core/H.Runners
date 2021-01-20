@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core.TestHelpers" Version="0.22.4" />
+    <PackageReference Include="H.Core.TestHelpers" Version="0.22.5" />
     <PackageReference Include="H.Tests.WPF" Version="1.0.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.0-preview-20201020-06" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.1.2" />

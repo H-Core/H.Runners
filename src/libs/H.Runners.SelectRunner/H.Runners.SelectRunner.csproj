@@ -18,7 +18,7 @@ $(PackageReleaseNotes)
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="H.Core" Version="0.22.4" />
+    <PackageReference Include="H.Core" Version="0.22.5" />
     <PackageReference Include="H.Hooks" Version="1.2.2" />
   </ItemGroup>
 
