@@ -99,7 +99,10 @@ namespace H.Runners
             var currentPoint = new Point();
 
             using var exceptions = new ExceptionsBag();
-            using var hook = new LowLevelMouseHook();
+            using var hook = new LowLevelMouseHook
+            {
+                GenerateMouseMoveEvents = true,
+            };
             hook.ExceptionOccurred += (_, exception) =>
             {
                 // ReSharper disable once AccessToDisposedClosure
@@ -107,9 +110,9 @@ namespace H.Runners
             };
 
             var isInitialized = false;
-            hook.MouseMove += (_, args) =>
+            hook.Move += (_, args) =>
             {
-                currentPoint = new Point(args.X, args.Y);
+                currentPoint = args.Position;
                 if (isInitialized)
                 {
                     return;
